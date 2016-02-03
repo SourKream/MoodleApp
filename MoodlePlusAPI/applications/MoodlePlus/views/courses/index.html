@@ -1,0 +1,6 @@
+{{extend 'layout.html'}}
+<h1>{{=current_year}}, {{=sems[current_sem].title()}} Semester</h1>
+<br>
+{{for this_course in courses_list()["courses"]:}}
+	{{=H2(A(this_course.code.upper()+": "+this_course.name,_href="/courses/course/"+this_course.code),)}}
+{{pass}}

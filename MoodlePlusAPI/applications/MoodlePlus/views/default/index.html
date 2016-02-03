@@ -1,0 +1,44 @@
+{{#left_sidebar_enabled,right_sidebar_enabled=False,('message' in globals())}}
+{{extend 'layout.html'}}
+
+{{if auth.is_logged_in():}}
+    <h1 class="page-header">Dashboard</h1>
+    <header class="container-fluid background">
+      <div class="jumbotron text-center">
+        {{if response.title:}}
+        <h1>{{=response.title}}
+          <small>{{=response.subtitle or ''}}</small></h1>
+        {{pass}}
+      </div>
+    </header>
+
+    
+{{else:}}
+  {{block header}}
+      
+  {{end}}
+
+  <div class="jumbotron">
+  <h1>Moodle Plus</h1>
+  <h2>COP290 Design Practices</h2>
+  <h3>Dr. Vinay J. Ribeiro</h3><br><br>
+
+  <span><strong>Teaching Assistants</strong></span><br>
+  <span>Prathmesh Kallurkar (2012CSZ8280)</span><br>
+  <span>Abhishek Bansal (2011CS50271)</span><br>
+  <span>Jasmeet Singh (2011CS50281)</span><br>
+  <span>Shubham Jindal (2011CS50300)</span><br>
+  <span>Ankit Rohilla (2014MCS2118)</span><br>
+  <span>Megha Gautam (2014MCS2125)</span><br>
+  <span>Preeti Rani (2014MCS2131)</span><br>
+  <span>Surbhi Jain (2014MCS2803)</span><br><br>
+
+  <p><a class="btn btn-primary btn-lg" href="/user/login" role="button">Login</a>
+  <a class="btn btn-default btn-lg" href="/user/register" role="button">Sign Up</a></p>
+  
+</div>
+<div>
+  
+  
+</div>
+{{pass}}

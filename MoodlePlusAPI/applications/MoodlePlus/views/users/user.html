@@ -1,0 +1,48 @@
+{{extend 'layout.html'}}
+<table id="profile_table">
+	<tbody>
+		<tr>
+			<td class="w100">
+				<img class="[ img-circle pull-left ]" src="/static/images/profile.png" alt="Mouse0270" />
+			</td>
+			<td>
+				<h3>{{=getProfileLink(user.id)}}</h3>
+			</td>
+		</tr>
+		<tr>
+			<td class="w100">
+				<strong>User type:</strong>
+			</td>
+			<td>
+				<span>{{="Student" if user.type_==0 else "Faculty"}}</span>
+			</td>
+		</tr>
+		<tr>
+			<td class="w100">
+				<strong>User Name:</strong>
+			</td>
+			<td>
+				<span>{{=user.username}}</span>
+			</td>
+		</tr>
+		<tr>
+			<td class="w100">Courses this semester</td>
+			<td>
+				<ul class="nav nav-sidebar">
+              {{for this_course in courses_list(user=user.id)["courses"]:}}
+                {{=LI(A(this_course.name,_href="/courses/course/"+this_course.code),_class="active" if len(request.args)>0 and request.args[0]==this_course.code else "")}}
+              {{pass}}
+            </ul>
+			</td>
+		</tr>
+	</tbody>
+</table>
+
+<style type="text/css">
+table#profile_table>tr{
+	padding: 10px;
+}
+td.w100{
+	width: 200px;
+}
+</style>
