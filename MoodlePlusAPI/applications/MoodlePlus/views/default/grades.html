@@ -1,0 +1,37 @@
+{{extend 'layout.html'}}
+<div class="table-responsive">
+	{{if len(grades)>0:}}
+		<table class="table table-striped">
+			<thead>
+				<tr>
+					<td>S.no.</td>
+					<td>Course</td>
+					<td>Grade Item</td>
+					<td>Score</td>
+					<td>Weight</td>
+					<td>Absolute Marks</td>
+				</tr>
+			</thead>
+			<tbody>
+			{{sc = 0}}
+			{{we = 0}}
+			{{tot = 0}}
+			{{for i,grade in enumerate(grades):}}
+				<tr>
+					<td>{{=i+1}}</td>
+					<td>{{=courses[i].code}}</td>
+					<td>{{=grade.name.title()}}</td>
+					<td>{{=grade.score}}&nbsp;/&nbsp;{{=grade.out_of}}</td>
+					<td>{{=grade.weightage}}</td>
+					{{ab=round((grade.score/grade.out_of)*grade.weightage,2)}}
+					<td>{{=ab}}</td>
+				</tr>
+				{{we+=grade.weightage}}
+				{{sc+=ab}}
+			{{pass}}
+			</tbody>
+		</table>
+	{{else:}}
+		<h3>No Grades awarded Yet!</h3>
+	{{pass}}
+</div>

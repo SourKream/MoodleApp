@@ -1,0 +1,242 @@
+{{extend 'layout.html'}}
+{{#=BEAUTIFY(response._vars)}}
+{{=H1(course.code.upper() +": " + course.name.title(), _class="course_title") }}
+{{=SPAN(course.description,_class="course_description")}}
+{{request_args = request.args}}
+{{if len(request_args)< 2:}}
+	{{request_args.append("")}}
+{{pass}}
+{{request.args1 = list(request_args)}}
+{{request.args1[1]="overview"}}
+{{request.args2 = list(request_args)}}
+{{request.args2[1]="assignments"}}
+{{request.args3 = list(request_args)}}
+{{request.args3[1]="resources"}}
+{{request.args4 = list(request_args)}}
+{{request.args4[1]="threads"}}
+{{request.args5 = list(request_args)}}
+{{request.args5[1]="grades"}}
+<ul class="nav nav-tabs nav-justified">	
+  <li role="presentation" class={{="active" if tab=="overview" else ""}}><a href="{{=URL('courses','course',args=request.args1)}}">Overview</a></li>
+  <li role="presentation" class={{="active" if tab=="assignments" else ""}}><a href="{{=URL('courses','course',args=request.args2)}}">Assignments</a></li>
+  <li role="presentation" class={{="active" if tab=="resources" else ""}}><a href="{{=URL('courses','course',args=request.args3)}}">Resources</a></li>
+  <li role="presentation" class={{="active" if tab=="threads" else ""}}><a href="{{=URL('courses','course',args=request.args4)}}">Threads</a></li>
+  <li role="presentation" class={{="active" if tab=="grades" else ""}}><a href="{{=URL('courses','course',args=request.args5)}}">Grades</a></li>
+</ul>
+<br>
+{{if registered:}}
+	{{=H3(XML("Faculty:" + getProfileLink(registered.professor)))}}
+	<!-- Assignements -->
+	{{if tab=="assignments":}}
+		<div class="table-responsive">
+		{{if len(assignments)>0:}}
+			<table class="table table-striped">
+				<thead>
+					<tr>
+						<td>S.no.</td>
+						<td>Name</td>
+						<td>Time Remaining</td>
+					</tr>
+				</thead>
+				<tbody>
+				{{for i,assignment in enumerate(assignments):}}
+					<tr>
+						<td>{{=i+1}}</td>
+						<td><a href="{{=URL('assignment',args=[assignment.id])}}">{{=assignment.name.title()}}</a></td>
+						<td>{{=assignment.deadline - datetime.now()}}</td>
+					</tr>
+				{{pass}}
+				</tbody>
+			</table>
+		{{else:}}
+			<h3>No Assignments. Yay!!</h3>
+		{{pass}}
+		</div>
+
+	<!-- Resources -->
+	{{elif tab=="resources":}}
+		<script type="text/javascript">
+			function submit_form() {
+				if ($('form input[name=sub_file]').val().trim()==""){
+					$('form input[name=sub_file]').click();
+					return false;
+				}
+				if ($('form input[name=sub_name]').val().trim()==""){
+					$('form input[name=sub_name]').focus();
+					alert("Please write a name for your submission.");
+					return false;
+				}
+				$('form[name=sub_form]').submit();
+				return true;
+			}
+
+			function file_chosen(){
+				var path = $('input[name=sub_file]').val();
+				var file_name = path.substring(12,path.length);
+				// $('#browse_button').html(file_name);
+				$('form input[name=sub_name]').val(file_name);
+			}
+		</script>
+		<div id="new_resource">
+			<h3>Upload a {{='private' if auth.user.type_==0 else 'public'}} resource</h3>
+			<form name="sub_form" action="/courses/new_resource/{{=course.code}}" enctype="multipart/form-data" method="post">
+				<input name="_formname" type="hidden" value="sub_form" placeholder="Name of file">
+				<input class="input string" name="sub_name" type="text" value="">
+				<div id="browse_button" class="btn btn-default btn-file" onclick="$('input[type=file]').trigger('click');">
+					Browse
+				</div>
+				<input class="" name="sub_file" type="file" onchange="file_chosen()" style="display:none">
+				<br>
+			</form>
+			<input id="sub_submit" class="btn btn-success" type="submit" value="Submit" onclick="submit_form()">
+		</div>
+		<script type="text/javascript">
+			function post_new_resource(){
+
+			}
+		</script>
+		{{if len(resources)>0:}}
+		<div class="table-responsive">
+			<table class="table table-striped">
+				<thead>
+					<tr>
+						<td>S.no.</td>
+						<td>Title</td>
+						<td>Actions</td>
+						<td>Uploaded</td>
+						<td>Private</td>
+					</tr>
+				</thead>
+				<tbody>
+				{{for i,resource in enumerate(resources):}}
+					<tr>
+						<td>{{=i+1}}</td>
+						<td><a href="{{=URL(f='link', args=resource.file_)}}">{{=resource.name}}</a></td>
+						<td><a href="{{=URL(f='download', args=resource.file_)}}">[Download]</a>
+							&nbsp;&nbsp;&nbsp;
+							{{if resource.is_public==0:}}
+							<a href="{{=URL(f='delete_resource', args=resource.file_)}}" style="color:red">[Delete]</a></td>
+							{{pass}}
+						<td>{{=timeHuman(resource.created_at)}}</td>
+						<td>{{="NO" if resource.is_public else "YES"}}</td>
+					</tr>
+				{{pass}}
+				</tbody>
+			</table>
+		</div>
+		{{pass}}
+
+	<!-- Grades -->
+	{{elif tab=="grades":}}
+		<div class="table-responsive">
+		{{if len(grades)>0:}}
+			<table class="table table-striped">
+				<thead>
+					<tr>
+						<td>S.no.</td>
+						<td>Grade Item</td>
+						<td>Score</td>
+						<td>Weight</td>
+						<td>Absolute Marks</td>
+					</tr>
+				</thead>
+				<tbody>
+				{{sc = 0}}
+				{{we = 0}}
+				{{tot = 0}}
+				{{for i,grade in enumerate(grades):}}
+					<tr>
+						<td>{{=i+1}}</td>
+						<td>{{=grade.name.title()}}</td>
+						<td>{{=grade.score}}&nbsp;/&nbsp;{{=grade.out_of}}</td>
+						<td>{{=grade.weightage}}</td>
+						{{ab=round((grade.score/grade.out_of)*grade.weightage,2)}}
+						<td>{{=ab}}</td>
+					</tr>
+					{{we+=grade.weightage}}
+					{{sc+=ab}}
+				{{pass}}
+				<tr>
+					<td>--</td>
+					<td><strong>Total</strong></td>
+					<td><strong>{{=sc}}&nbsp;/&nbsp;{{=we}}</strong></td>
+					<td><strong>{{=we}}</strong></td>
+					<td><strong>{{=sc}}</strong></td>
+					</tr>
+				</tbody>
+			</table>
+		{{else:}}
+			<h3>No Grades awarded Yet!</h3>
+		{{pass}}
+		</div>
+	<!-- Threads -->
+	{{elif tab=="threads":}}
+		<div id="new_thread">
+			<h3>Post a new thread</h3>
+			<input class="form-control" id="new_thread_title" type="text" placeholder="Title" tabindex="1">
+			<textarea class="form-control" id="new_thread_description" rows=4 placeholder="Description" tabindex="2"></textarea>
+			<button class="btn btn-primary" onclick="post_new_thread();" tabindex="3">Submit</button>
+		</div>
+		<script type="text/javascript">
+		function post_new_thread(){
+			if ($('#new_thread_description').val().trim()!='' && $('#new_thread_title').val().trim()!=''){
+				$.ajax({
+					url:'/threads/new.json?course_code={{=course.code}}&description='+$('#new_thread_description').val()+"&title="+$('#new_thread_title').val(),
+					success:function(data){
+						location.href=location.href;
+					},
+					error:function(){
+						alert("Couldn't post new thread.");
+					}
+				});
+			}
+		}
+		</script>
+		{{if len(course_threads)>0:}}
+		<div class="table-responsive">
+			<table class="table table-striped">
+				<thead>
+					<tr>
+						<td>S.no.</td>
+						<td>Title</td>
+						<td>Updated On</td>
+					</tr>
+				</thead>
+				<tbody>
+				{{for i,thread in enumerate(course_threads):}}
+					<tr>
+						<td>{{=i+1}}</td>
+						<td><a href="{{=URL('threads','thread',args=[thread.id])}}">{{=getValidThreadTitle(thread)}}</a></td>
+						<td>{{=thread.updated_at}}</td>
+					</tr>
+				{{pass}}
+				</tbody>
+			</table>
+		</div>
+		{{pass}}
+	<!-- Overview -->
+	{{else:}}
+		<!-- Overview -->
+		<div class="table-responsive">
+			<table class="table table-striped">
+				<tbody>
+				{{current_week = registered.starting_date}}
+				{{week_no = 1}}
+				{{while current_week < registered.ending_date - timedelta(days=-7):}}
+					<tr>
+						<td>
+						{{next_week = current_week - timedelta(days=-7)}}
+						{{=H3("Week "+str(week_no)+": ")}}
+						{{=H5(str(current_week.date())+" to "+str(current_week.date()))}}
+						{{current_week=next_week}}
+						{{week_no = week_no + 1}}
+						</td>
+					</tr>
+				{{pass}}
+				</tbody>
+			</table>
+		</div>
+
+	{{pass}}
+
+{{pass}}

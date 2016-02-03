@@ -1,0 +1,10 @@
+*.pyc
+*.log
+httpserver.pid
+parameters_80.py
+applications/MoodlePlus/errors/
+applications/MoodlePlus/databases/
+applications/MoodlePlus/sessions/
+applications/MoodlePlus/uploads/
+applications/admin/sessions/
+

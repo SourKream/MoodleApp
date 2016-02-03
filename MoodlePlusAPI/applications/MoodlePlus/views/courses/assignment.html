@@ -1,0 +1,89 @@
+{{extend 'layout.html'}}
+{{#=BEAUTIFY(response._vars)}}
+{{=A(' <--- back',_href='/courses/course/'+course.code)}}
+{{=H1(assignment.name)}}
+{{=SPAN(XML(assignment.description))}}
+<script type="text/javascript">
+	function submit_form() {
+		if ($('form input[name=sub_file]').val().trim()==""){
+			$('form input[name=sub_file]').click();
+			return false;
+		}
+		if ($('form input[name=sub_name]').val().trim()==""){
+			$('form input[name=sub_name]').focus();
+			alert("Please write a name for your submission.");
+			return false;
+		}
+		$('form[name=sub_form]').submit();
+		return true;
+	}
+
+	function file_chosen(){
+		var path = $('input[name=sub_file]').val();
+		var file_name = path.substring(12,path.length);
+		// $('#browse_button').html(file_name);
+		$('form input[name=sub_name]').val(file_name);
+	}
+	 // $("input[name=sub_file]").change(function (e) {
+	 // 	console.log('called');
+  //       var path = this.value;
+  //       this.form.field.value = "..." + path.substring(11, path.length);
+  //  });
+</script>
+<div class="table-responsive">
+	<table class="table table-striped">
+		<tbody>
+			<tr>
+				<td>{{=B("Created At")}}</td><td>{{=assignment.created_at}}</td>
+			</tr>
+			<tr>
+				<td>{{=B("Deadline")}}</td><td>{{=assignment.deadline}}</td>
+			</tr>
+			<tr>
+				<td>{{=B("Time Remaining")}}</td><td>{{=assignment.deadline-datetime.now()}}</td>
+			</tr>
+			<tr>
+				<td>{{=B("Late days allowed")}}</td><td>{{=assignment.late_days_allowed}}</td>
+			</tr>
+			<tr>
+				<td>{{=B("Previous Submissions")}}</td>
+				<td>
+					
+						{{for this_sub in submissions:}}
+							
+								<a href="{{=URL(f='link', args=this_sub.file_)}}">
+									{{=this_sub.name}}
+								</a> 
+								<sub>
+									Submitted at {{=this_sub.created_at if this_sub.created_at else this_sub.event_id.created_at}}
+								</sub> 
+								&nbsp;&nbsp;&nbsp;
+								<a href="{{=URL(f='download', args=this_sub.file_)}}">
+									[Download]
+								</a>&nbsp;&nbsp;&nbsp;
+								<a href="{{=URL(f='delete', args=this_sub.file_)}}" style="color:red">
+									[Delete]
+								</a>
+								<br>	
+						{{pass}}
+						
+				</td>
+			</tr>
+			<tr>
+				<td>{{=B("Submission")}}</td>
+				<td>
+					<form name="sub_form" action="" enctype="multipart/form-data" method="post">
+						<input name="_formname" type="hidden" value="sub_form" placeholder="Name of file">
+						<input class="input string" name="sub_name" type="text" value="">
+						<div id="browse_button" class="btn btn-default btn-file" onclick="$('input[type=file]').trigger('click');">
+							Browse
+						</div>
+						<input class="" name="sub_file" type="file" onchange="file_chosen()" style="display:none">
+						<br>
+					</form>
+					<input id="sub_submit" class="btn btn-success" type="submit" value="Submit" onclick="submit_form()">
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
