@@ -9,7 +9,9 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="io.github.suragnair.moodleapp.MainActivity">
-
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -37,12 +39,13 @@
             android:elevation="16dp"/>
 
     </LinearLayout>
+    </ScrollView>
 
     <android.support.design.widget.FloatingActionButton
         app:fabSize="normal"
-        app:elevation="6dp"
-        app:pressedTranslationZ="12dp"
-        android:layout_gravity="end"
+        app:elevation="4dp"
+        app:pressedTranslationZ="4dp"
+        android:layout_gravity=""
 
         android:id="@+id/fab"
         android:src="@drawable/fab_plus"
