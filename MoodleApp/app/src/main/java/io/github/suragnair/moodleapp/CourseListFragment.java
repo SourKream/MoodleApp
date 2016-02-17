@@ -2,52 +2,71 @@ package io.github.suragnair.moodleapp;
 
 import android.app.Activity;
 import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
-import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.List;
-import java.util.zip.Inflater;
 
 public class CourseListFragment extends Fragment {
 
-    private List<Course> courseList = new ArrayList<Course>();
+    private List<Course> courseList = new ArrayList<>();
+    private ListView courseListView = null;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_course_list, container, false);
 
-        populateCourseList();
-        ListView courseListView = (ListView) view.findViewById(R.id.courseList);
+        // Temp Login
+        Networking.getData(0, new String[]{"cs1110200", "john"}, new Networking.VolleyCallback() {
+            @Override
+            public void onSuccess(String result) {
+                populateCourseList();
+            }
+        });
+
+        courseListView = (ListView) view.findViewById(R.id.courseList);
         courseListView.setAdapter(new CustomListAdapter(this.getActivity(), courseList));
 
         return view;
-
     }
 
     public void populateCourseList(){
-        courseList.add(new Course("COP290","Design Practices"));
-        courseList.add(new Course("ELL201","Digital Electronics"));
+        Networking.getData(2, new String[0], new Networking.VolleyCallback() {
+            @Override
+            public void onSuccess(String result) {
+                try {
+                    JSONObject response = new JSONObject(result);
+                    JSONArray jsonCourseList = new JSONArray(response.getString("courses"));
+                    for (int i=0; i<jsonCourseList.length(); i++){
+                        JSONObject course = jsonCourseList.getJSONObject(i);
+                        courseList.add(new Course(course.getString("code").toUpperCase(),course.getString("name")));
+                    }
+                    CustomListAdapter adapter = (CustomListAdapter) courseListView.getAdapter();
+                    adapter.notifyDataSetChanged();
+                } catch (JSONException e){
+                    Log.d("Json Exception", "Response from server wasn't JSON");
+                }
+            }
+        });
     }
 
     public class Course{
         public String CourseCode;
         public String CourseDescription;
-
-        public Course (){
-
-        }
 
         public Course (String code, String description){
             CourseCode = code;
