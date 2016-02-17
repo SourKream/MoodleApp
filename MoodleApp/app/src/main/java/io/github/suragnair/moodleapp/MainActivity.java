@@ -3,29 +3,40 @@ package io.github.suragnair.moodleapp;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 
 public class MainActivity extends AppCompatActivity {
 
     private String[] NavigationMenuList = {"Courses","Grades","Notifications"};
     private DrawerLayout drawerLayout;
-    private ListView drawerListView;
+    private RelativeLayout drawerSliderLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         android.support.v7.widget.Toolbar toolbar = (android.support.v7.widget.Toolbar) findViewById(R.id.my_toolbar);
         setSupportActionBar(toolbar);
-
-        getSupportFragmentManager().beginTransaction().replace(R.id.content_frame, new CourseListFragment()).commit();
+        toolbar.setNavigationIcon(R.drawable.ic_menu_white_24dp);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                drawerLayout.openDrawer(drawerSliderLayout);
+            }
+        });
 
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawerListView = (ListView) findViewById(R.id.left_drawer);
+        drawerSliderLayout = (RelativeLayout) findViewById(R.id.left_drawer);
 
+        ListView drawerListView = (ListView) findViewById(R.id.left_drawer_list);
         drawerListView.setAdapter(new ArrayAdapter<>(this, R.layout.navigation_list_item, NavigationMenuList));
         drawerListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -34,10 +45,28 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        changeFragment(0);
+
         Networking.getData(0, new String[]{"cs1110200", "john"}, new Networking.VolleyCallback() {
             @Override
             public void onSuccess(String result) {}
         });
+    }
+
+    public boolean onCreateOptionsMenu (Menu menu){
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.activity_main_toolbar, menu);
+        return true;
+    }
+
+    public boolean onOptionsItemSelected (MenuItem item){
+        if (item.getItemId()==R.id.notificationButton){
+            // TODO Check if not already notifications fragment
+            changeFragment(2);
+            return true;
+        }
+        else
+            return super.onOptionsItemSelected(item);
     }
 
     private void changeFragment (int position){
@@ -52,7 +81,12 @@ public class MainActivity extends AppCompatActivity {
         }
         android.support.v4.app.FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
-        drawerLayout.closeDrawer(drawerListView);
+        if (drawerLayout.isDrawerOpen(drawerSliderLayout))
+            drawerLayout.closeDrawer(drawerSliderLayout);
+    }
+
+    public void signOutClicked (View view){
+        drawerLayout.closeDrawer(drawerSliderLayout);
     }
 
 }

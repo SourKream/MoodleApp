@@ -1,4 +1,4 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -10,7 +10,17 @@
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="Notifications"
         android:id="@+id/textView"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentTop="true"
         android:paddingTop="30dp"
         android:layout_gravity="center_horizontal|top" />
 
-</FrameLayout>
+    <ListView
+        android:id="@+id/NotificationsListView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/textView"/>
+
+
+</RelativeLayout>
