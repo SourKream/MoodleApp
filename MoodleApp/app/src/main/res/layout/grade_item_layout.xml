@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:layout_width="327dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/GradeItem"
+        android:text="Grade Item"
+        android:textSize="20sp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/S.No."
+        android:text="S.No."
+        android:textSize="20dp"/>
+
+    <TextView
+        android:paddingTop="8dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Score : "
+        android:id="@+id/Score"
+        android:layout_below="@+id/GradeItem"
+        android:layout_alignStart="@+id/GradeItem" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Weight : "
+        android:id="@+id/Weight"
+        android:layout_below="@+id/Score"
+        android:layout_alignStart="@+id/Score" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Marks : "
+        android:id="@+id/Marks"
+        android:layout_below="@+id/Weight"
+        android:layout_alignStart="@+id/Weight" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="score"
+        android:id="@+id/score"
+        android:layout_above="@+id/Weight"
+        android:layout_toEndOf="@+id/Weight" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="weight"
+        android:id="@+id/weight"
+        android:layout_below="@+id/score"
+        android:layout_alignStart="@+id/score" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="marks"
+        android:id="@+id/marks"
+        android:layout_below="@+id/weight"
+        android:layout_alignStart="@+id/weight" />
+
+
+</RelativeLayout>
