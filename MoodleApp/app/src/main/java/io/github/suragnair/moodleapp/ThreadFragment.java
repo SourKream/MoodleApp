@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,12 +14,18 @@ import android.widget.BaseAdapter;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class ThreadFragment extends Fragment{
 
     private List<Thread> threadList = new ArrayList<Thread>();
+    private ListView threadListView;
+    public String CourseName;
 
     public ThreadFragment() {
         // Required empty public constructor
@@ -28,6 +35,8 @@ public class ThreadFragment extends Fragment{
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        Bundle bundle = this.getArguments();
+        CourseName = bundle.getString("coursename");
         addThreads();
     }
 
@@ -36,41 +45,45 @@ public class ThreadFragment extends Fragment{
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.thread_fragment, container, false);
-        ListView threadListView = (ListView) view.findViewById(R.id.ThreadList);
+        threadListView = (ListView) view.findViewById(R.id.ThreadList);
         threadListView.setAdapter(new CustomListAdapter(this.getActivity(), threadList));
         return view;
     }
 
     public void addThreads()
     {
-        threadList.add(new Thread("Minor-1", "12:01 am", "updated 1 hour ago"));
-        threadList.add(new Thread("Minor-2", "12:01 am", "updated 1 hour ago"));
-        threadList.add(new Thread("Minor-3", "12:01 am", "updated 1 hour ago"));
-        threadList.add(new Thread("Minor-3", "12:01 am", "updated 1 hour ago"));
-        threadList.add(new Thread("Minor-3", "12:01 am", "updated 1 hour ago"));
-        threadList.add(new Thread("Minor-3", "12:01 am", "updated 1 hour ago"));
-        threadList.add(new Thread("Minor-3", "12:01 am", "updated 1 hour ago"));
-        threadList.add(new Thread("Minor-3", "12:01 am", "updated 1 hour ago"));
-        threadList.add(new Thread("Minor-3", "12:01 am", "updated 1 hour ago"));
-        threadList.add(new Thread("Minor-3", "12:01 am", "updated 1 hour ago"));
-
+        Networking.getData(8, new String[]{CourseName}, new Networking.VolleyCallback() {
+            @Override
+            public void onSuccess(String result) {
+                try {
+                    JSONObject response = new JSONObject(result);
+                    JSONArray jsonThreadList = new JSONArray(response.getString("course_threads"));
+                    int length = jsonThreadList.length();
+                    if(length>0) {
+                        for (int i = 0; i < length; i++) {
+                            JSONObject thread = jsonThreadList.getJSONObject(i);
+                            threadList.add(new Thread(thread.getString("title"), thread.getString("description"), thread.getString("updated_at")));
+                        }
+                    }
+                    CustomListAdapter adapter = (CustomListAdapter) threadListView.getAdapter();
+                    adapter.notifyDataSetChanged();
+                } catch (JSONException e) {
+                    Log.d("Json Exception", "Response from server wasn't JSON");
+                }
+            }
+        });
     }
 
     public class Thread{
         public String Title;
-        public String LastUpdated;
-        public String CreatedAt;
+        public String Description;
+        public String UpdatedAt;
 
-        public Thread()
-        {
-
-        }
-
-        public Thread(String title, String createdAt, String lastUpdated)
+        public Thread(String title, String description, String updatedat)
         {
             Title = title;
-            LastUpdated = lastUpdated;
-            CreatedAt = createdAt;
+            Description = description;
+            UpdatedAt = updatedat;
         }
     }
 
@@ -113,8 +126,8 @@ public class ThreadFragment extends Fragment{
 
                     Thread thread = threadList.get(position);
                     threadTitle.setText(thread.Title);
-                    threadCreatedAt.setText(thread.CreatedAt);
-                    threadLastUpdate.setText(thread.LastUpdated);
+                    threadCreatedAt.setText(thread.Description);
+                    threadLastUpdate.setText(thread.UpdatedAt);
 
                     return convertView;
                 }

@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,12 +12,18 @@ import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class GradeFragment extends Fragment{
 
     private List<Grade> gradeList = new ArrayList<Grade>();
+    private ListView GradeListView = null;
+    public String CourseName;
 
     public GradeFragment() {
         // Required empty public constructor
@@ -26,6 +33,8 @@ public class GradeFragment extends Fragment{
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        Bundle bundle = this.getArguments();
+        CourseName = bundle.getString("coursename");
         populateGradeList();
     }
 
@@ -34,35 +43,51 @@ public class GradeFragment extends Fragment{
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.grade_fragment, container, false);
-        ListView GradeListView = (ListView) view.findViewById(R.id.GradesList);
+        GradeListView = (ListView) view.findViewById(R.id.GradesList);
         GradeListView.setAdapter(new CustomListAdapter(this.getActivity(), gradeList));
         return view;
     }
     public void populateGradeList()
     {
-        gradeList.add(new Grade("1.", "Basic UI Learning", "5/30", "20 %", "5"));
-        gradeList.add(new Grade("2.", "Moodle App", "20/20", "56 %", "20"));
+        Networking.getData(7, new String[]{CourseName}, new Networking.VolleyCallback() {
+            @Override
+            public void onSuccess(String result) {
+                try {
+                    JSONObject response = new JSONObject(result);
+                    JSONArray jsonGradeList = new JSONArray(response.getString("grades"));
+                    int length = jsonGradeList.length();
+                    if(length>0) {
+                        for (int i = 0; i < jsonGradeList.length(); i++) {
+                            JSONObject grade = jsonGradeList.getJSONObject(i);
+                            gradeList.add(new Grade(String.valueOf(i + 1), grade.getString("name"),
+                                    grade.getString("score"), grade.getString("out_of"),
+                                    grade.getString("weightage")));
+                        }
+                    }
+                    CustomListAdapter adapter = (CustomListAdapter) GradeListView.getAdapter();
+                    adapter.notifyDataSetChanged();
+                } catch (JSONException e) {
+                    Log.d("Json Exception", "Response from server wasn't JSON");
+                }
+            }
+        });
+
     }
 
     public class Grade{
         public String SerialNo;
         public String ItemName;
         public String Score;
+        public String OutOf;
         public String Weight;
-        public String Marks;
 
-        public Grade()
-        {
-
-        }
-
-        public Grade(String serialNo, String itemName, String score, String weight, String marks)
+        public Grade(String serialNo, String itemName, String score, String outof, String weight)
         {
             SerialNo = serialNo;
             ItemName = itemName;
             Score = score;
+            OutOf = outof;
             Weight = weight;
-            Marks = marks;
         }
     }
 
@@ -104,13 +129,20 @@ public class GradeFragment extends Fragment{
             TextView score = (TextView) convertView.findViewById(R.id.score);
             TextView weight = (TextView) convertView.findViewById(R.id.weight);
             TextView absoluteMarks = (TextView) convertView.findViewById(R.id.marks);
-
             Grade grade = gradesList.get(position);
+
+            String scoreText = grade.Score + " out of " + grade.OutOf;
+            int sc = Integer.valueOf(grade.Score);
+            int of = Integer.valueOf(grade.OutOf);
+            int wt = Integer.valueOf(grade.Weight);
+            int mks = (sc/of)*wt;
+            String Marks = String.valueOf(mks);
+
             ItemName.setText(grade.ItemName);
             SNo.setText(grade.SerialNo);
             score.setText(grade.Score);
             weight.setText(grade.Weight);
-            absoluteMarks.setText(grade.Marks);
+            absoluteMarks.setText(Marks);
 
             return convertView;
         }

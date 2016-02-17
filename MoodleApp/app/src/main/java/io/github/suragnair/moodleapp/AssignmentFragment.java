@@ -1,5 +1,6 @@
 package io.github.suragnair.moodleapp;
 
+import android.util.Log;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
@@ -11,12 +12,18 @@ import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+import org.json.JSONException;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class AssignmentFragment extends Fragment{
 
     private List<Assignment> assignmentList = new ArrayList<Assignment>();
+    private ListView AssgnListView =null;
+    public String CourseName;
 
     public AssignmentFragment() {
         // Required empty public constructor
@@ -26,6 +33,8 @@ public class AssignmentFragment extends Fragment{
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        Bundle bundle = this.getArguments();
+        CourseName = bundle.getString("coursename");
         addAssignments();
     }
 
@@ -34,26 +43,42 @@ public class AssignmentFragment extends Fragment{
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.assignment_fragment, container, false);
-        ListView AssgnListView = (ListView) view.findViewById(R.id.AssignmentList);
+
+
+        AssgnListView = (ListView) view.findViewById(R.id.AssignmentList);
         AssgnListView.setAdapter(new CustomListAdapter(this.getActivity(), assignmentList));
         return view;
     }
 
     public void addAssignments()
     {
-        assignmentList.add(new Assignment("1.", "Basic UI Learning", "2 days 4 hrs remaining"));
-        assignmentList.add(new Assignment("2.", "Moodle App", "4 days 3 hrs remaining"));
+        Networking.getData(5, new String[]{CourseName}, new Networking.VolleyCallback() {
+            @Override
+            public void onSuccess(String result) {
+                try {
+                    JSONObject response = new JSONObject(result);
+                    JSONArray jsonAssignmentList = new JSONArray(response.getString("assignments"));
+                    int length = jsonAssignmentList.length();
+                    if(length>0) {
+                        for (int i = 0; i < length; i++) {
+                            JSONObject assignment = jsonAssignmentList.getJSONObject(i);
+                            assignmentList.add(new Assignment(String.valueOf(i + 1), assignment.getString("name"), assignment.getString("deadline")));
+                        }
+                    }
+                    CustomListAdapter adapter = (CustomListAdapter) AssgnListView.getAdapter();
+                    adapter.notifyDataSetChanged();
+                } catch (JSONException e){
+                    Log.d("Json Exception", "Response from server wasn't JSON");
+                }
+            }
+        });
+
     }
 
     public class Assignment{
         public String Name;
         public String SerialNo;
         public String TimeRemaining;
-
-        public Assignment()
-        {
-
-        }
 
         public Assignment(String serialNo, String name, String timeRemaining)
         {

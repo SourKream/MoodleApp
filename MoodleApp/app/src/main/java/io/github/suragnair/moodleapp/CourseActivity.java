@@ -19,15 +19,13 @@ public class CourseActivity extends AppCompatActivity {
     private Toolbar toolbar;
     private TabLayout tabLayout;
     private ViewPager viewPager;
-
-   //
- //   Intent intent = getIntent();
+    public String CourseTitle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        String CourseTitle = getIntent().getStringExtra("coursename");
+        CourseTitle = getIntent().getStringExtra("coursename");
 
         setTitle(CourseTitle);
         setContentView(R.layout.course_activity_main);
@@ -46,9 +44,22 @@ public class CourseActivity extends AppCompatActivity {
 
     private void setupViewPager(ViewPager viewPager) {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
-        adapter.addFragment(new AssignmentFragment(), "ASSIGNMENTS");
-        adapter.addFragment(new ThreadFragment(),     "  THREADS  ");
-        adapter.addFragment(new GradeFragment(),      "  GRADES  ");
+
+        Bundle bundle = new Bundle();
+        bundle.putString("coursename",CourseTitle);
+
+        Fragment assignment_fragment = new AssignmentFragment();
+        Fragment thread_fragment = new ThreadFragment();
+        Fragment grade_fragment = new GradeFragment();
+
+        assignment_fragment.setArguments(bundle);
+        thread_fragment.setArguments(bundle);
+        grade_fragment.setArguments(bundle);
+
+        adapter.addFragment(assignment_fragment, "ASSIGNMENTS");
+        adapter.addFragment(thread_fragment,     "  THREADS  ");
+        adapter.addFragment(grade_fragment,      "  GRADES  ");
+
         viewPager.setAdapter(adapter);
     }
 
