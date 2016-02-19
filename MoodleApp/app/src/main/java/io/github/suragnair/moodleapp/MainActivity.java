@@ -24,8 +24,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        loginUser();
-
         android.support.v7.widget.Toolbar toolbar = (android.support.v7.widget.Toolbar) findViewById(R.id.my_toolbar);
         setSupportActionBar(toolbar);
         toolbar.setNavigationIcon(R.drawable.ic_menu_white_24dp);
@@ -47,8 +45,6 @@ public class MainActivity extends AppCompatActivity {
                 changeFragment(position);
             }
         });
-
-        changeFragment(0);
     }
 
     public boolean onCreateOptionsMenu (Menu menu){

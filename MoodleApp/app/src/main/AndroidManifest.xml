@@ -10,6 +10,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:name=".MyApplication">
+
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -23,7 +24,9 @@
                   android:parentActivityName="io.github.suragnair.moodleapp.MainActivity">
 
         </activity>
+
         <activity android:name=".LoginActivity"/>
+
     </application>
 
 </manifest>
