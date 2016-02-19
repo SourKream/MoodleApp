@@ -2,12 +2,15 @@ package io.github.suragnair.moodleapp;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
@@ -45,7 +48,28 @@ public class CourseThreadsFragment extends Fragment{
         View view = inflater.inflate(R.layout.fragment_course_threads, container, false);
         threadListView = (ListView) view.findViewById(R.id.ThreadList);
         threadListView.setAdapter(new CustomListAdapter(this.getActivity(), threadList));
+        threadListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent intent = new Intent(getActivity(), ThreadActivity.class);
+                intent.putExtra("thread_id", threadList.get(position).ID);
+                startActivity(intent);
+            }
+        });
+        FloatingActionButton fab = (FloatingActionButton) view.findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                newThreadClicked(v);
+            }
+        });
         return view;
+    }
+
+    public void newThreadClicked (View view){
+        Intent intent = new Intent(getActivity(), NewThreadActivity.class);
+        intent.putExtra("courseCode",CourseName);
+        startActivity(intent);
     }
 
     public void addThreads()
@@ -59,7 +83,7 @@ public class CourseThreadsFragment extends Fragment{
 
                         for (int i = 0; i < jsonThreadList.length(); i++) {
                             JSONObject thread = jsonThreadList.getJSONObject(i);
-                            threadList.add(new Thread(thread.getString("title"), thread.getString("description"), thread.getString("updated_at")));
+                            threadList.add(new Thread(thread.getString("title"), thread.getString("description"), thread.getString("updated_at"), thread.getInt("id")));
                         }
 
                     CustomListAdapter adapter = (CustomListAdapter) threadListView.getAdapter();
@@ -75,12 +99,14 @@ public class CourseThreadsFragment extends Fragment{
         public String Title;
         public String Description;
         public String UpdatedAt;
+        int ID;
 
-        public Thread(String title, String description, String updatedat)
+        public Thread(String title, String description, String updatedat, int id)
         {
             Title = title;
             Description = description;
             UpdatedAt = updatedat;
+            ID = id;
         }
     }
 
@@ -129,5 +155,4 @@ public class CourseThreadsFragment extends Fragment{
                     return convertView;
                 }
             }
-
 }
