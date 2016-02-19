@@ -1,0 +1,17 @@
+<FrameLayout
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_height="match_parent"
+    android:layout_width="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    tools:context="io.github.suragnair.moodleapp.CourseListFragment">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Grades"
+        android:id="@+id/textView"
+        android:paddingTop="30dp"
+        android:layout_gravity="center_horizontal|top" />
+
+</FrameLayout>
