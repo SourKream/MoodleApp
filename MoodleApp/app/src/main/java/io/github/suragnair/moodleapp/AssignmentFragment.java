@@ -42,7 +42,7 @@ public class AssignmentFragment extends Fragment{
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.assignment_fragment, container, false);
+        View view = inflater.inflate(R.layout.fragment_course_assignment, container, false);
 
 
         AssgnListView = (ListView) view.findViewById(R.id.AssignmentList);
@@ -58,13 +58,12 @@ public class AssignmentFragment extends Fragment{
                 try {
                     JSONObject response = new JSONObject(result);
                     JSONArray jsonAssignmentList = new JSONArray(response.getString("assignments"));
-                    int length = jsonAssignmentList.length();
-                    if(length>0) {
-                        for (int i = 0; i < length; i++) {
+
+                        for (int i = 0; i < jsonAssignmentList.length(); i++) {
                             JSONObject assignment = jsonAssignmentList.getJSONObject(i);
                             assignmentList.add(new Assignment(String.valueOf(i + 1), assignment.getString("name"), assignment.getString("deadline")));
                         }
-                    }
+
                     CustomListAdapter adapter = (CustomListAdapter) AssgnListView.getAdapter();
                     adapter.notifyDataSetChanged();
                 } catch (JSONException e){

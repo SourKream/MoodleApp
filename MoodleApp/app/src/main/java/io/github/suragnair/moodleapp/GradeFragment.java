@@ -42,7 +42,7 @@ public class GradeFragment extends Fragment{
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.grade_fragment, container, false);
+        View view = inflater.inflate(R.layout.fragment_course_grade, container, false);
         GradeListView = (ListView) view.findViewById(R.id.GradesList);
         GradeListView.setAdapter(new CustomListAdapter(this.getActivity(), gradeList));
         return view;
@@ -55,15 +55,14 @@ public class GradeFragment extends Fragment{
                 try {
                     JSONObject response = new JSONObject(result);
                     JSONArray jsonGradeList = new JSONArray(response.getString("grades"));
-                    int length = jsonGradeList.length();
-                    if(length>0) {
+
                         for (int i = 0; i < jsonGradeList.length(); i++) {
                             JSONObject grade = jsonGradeList.getJSONObject(i);
                             gradeList.add(new Grade(String.valueOf(i + 1), grade.getString("name"),
                                     grade.getString("score"), grade.getString("out_of"),
                                     grade.getString("weightage")));
                         }
-                    }
+
                     CustomListAdapter adapter = (CustomListAdapter) GradeListView.getAdapter();
                     adapter.notifyDataSetChanged();
                 } catch (JSONException e) {

@@ -1,6 +1,5 @@
 package io.github.suragnair.moodleapp;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -9,7 +8,6 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,7 +26,7 @@ public class CourseActivity extends AppCompatActivity {
         CourseTitle = getIntent().getStringExtra("coursename");
 
         setTitle(CourseTitle);
-        setContentView(R.layout.course_activity_main);
+        setContentView(R.layout.activity_course);
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
