@@ -19,13 +19,13 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GradeFragment extends Fragment{
+public class CourseGradesFragment extends Fragment{
 
     private List<Grade> gradeList = new ArrayList<Grade>();
     private ListView GradeListView = null;
     public String CourseName;
 
-    public GradeFragment() {
+    public CourseGradesFragment() {
         // Required empty public constructor
     }
 
@@ -139,7 +139,7 @@ public class GradeFragment extends Fragment{
 
             ItemName.setText(grade.ItemName);
             SNo.setText(grade.SerialNo);
-            score.setText(grade.Score);
+            score.setText(scoreText);
             weight.setText(grade.Weight);
             absoluteMarks.setText(Marks);
 

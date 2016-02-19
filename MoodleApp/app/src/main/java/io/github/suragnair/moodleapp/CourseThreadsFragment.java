@@ -19,13 +19,13 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ThreadFragment extends Fragment{
+public class CourseThreadsFragment extends Fragment{
 
     private List<Thread> threadList = new ArrayList<Thread>();
     private ListView threadListView;
     public String CourseName;
 
-    public ThreadFragment() {
+    public CourseThreadsFragment() {
         // Required empty public constructor
     }
 

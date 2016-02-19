@@ -44,11 +44,11 @@ public class CourseActivity extends AppCompatActivity {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
 
         Bundle bundle = new Bundle();
-        bundle.putString("coursename",CourseTitle);
+        bundle.putString("coursename", CourseTitle);
 
-        Fragment assignment_fragment = new AssignmentFragment();
-        Fragment thread_fragment = new ThreadFragment();
-        Fragment grade_fragment = new GradeFragment();
+        Fragment assignment_fragment = new CourseAssignmentFragment();
+        Fragment thread_fragment = new CourseThreadsFragment();
+        Fragment grade_fragment = new CourseGradesFragment();
 
         assignment_fragment.setArguments(bundle);
         thread_fragment.setArguments(bundle);

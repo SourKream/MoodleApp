@@ -1,5 +1,6 @@
 package io.github.suragnair.moodleapp;
 
+import android.content.Intent;
 import android.util.Log;
 import android.app.Activity;
 import android.content.Context;
@@ -8,6 +9,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -19,13 +21,13 @@ import org.json.JSONException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AssignmentFragment extends Fragment{
+public class CourseAssignmentFragment extends Fragment{
 
     private List<Assignment> assignmentList = new ArrayList<Assignment>();
     private ListView AssgnListView =null;
     public String CourseName;
 
-    public AssignmentFragment() {
+    public CourseAssignmentFragment() {
         // Required empty public constructor
     }
 
@@ -47,6 +49,17 @@ public class AssignmentFragment extends Fragment{
 
         AssgnListView = (ListView) view.findViewById(R.id.AssignmentList);
         AssgnListView.setAdapter(new CustomListAdapter(this.getActivity(), assignmentList));
+        AssgnListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                String assignment_id = assignmentList.get(position).AssignID;
+                Intent intent = new Intent(getActivity(), CourseActivity.class);
+                intent.putExtra("coursename", CourseName);
+                intent.putExtra("assignment_id", assignment_id);
+                startActivity(intent);
+            }
+        });
+
         return view;
     }
 
@@ -61,7 +74,8 @@ public class AssignmentFragment extends Fragment{
 
                         for (int i = 0; i < jsonAssignmentList.length(); i++) {
                             JSONObject assignment = jsonAssignmentList.getJSONObject(i);
-                            assignmentList.add(new Assignment(String.valueOf(i + 1), assignment.getString("name"), assignment.getString("deadline")));
+                            assignmentList.add(new Assignment(String.valueOf(i + 1), assignment.getString("name"),
+                                    assignment.getString("deadline"), assignment.getString("id")));
                         }
 
                     CustomListAdapter adapter = (CustomListAdapter) AssgnListView.getAdapter();
@@ -78,12 +92,14 @@ public class AssignmentFragment extends Fragment{
         public String Name;
         public String SerialNo;
         public String TimeRemaining;
+        public String AssignID;
 
-        public Assignment(String serialNo, String name, String timeRemaining)
+        public Assignment(String serialNo, String name, String timeRemaining, String assignID)
         {
             Name = name;
             SerialNo = serialNo;
             TimeRemaining = timeRemaining;
+            AssignID = assignID;
         }
     }
 
