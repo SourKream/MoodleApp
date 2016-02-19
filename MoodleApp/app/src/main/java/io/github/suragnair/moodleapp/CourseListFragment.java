@@ -29,13 +29,7 @@ public class CourseListFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_course_list, container, false);
 
-        // Temp Login
-        Networking.getData(0, new String[]{"cs1110200", "john"}, new Networking.VolleyCallback() {
-            @Override
-            public void onSuccess(String result) {
-                populateCourseList();
-            }
-        });
+        populateCourseList();
 
         courseListView = (ListView) view.findViewById(R.id.courseList);
         courseListView.setAdapter(new CustomListAdapter(this.getActivity(), courseList));

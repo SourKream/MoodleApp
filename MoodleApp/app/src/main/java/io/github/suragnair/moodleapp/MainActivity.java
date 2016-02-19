@@ -1,5 +1,6 @@
 package io.github.suragnair.moodleapp;
 
+import android.content.Intent;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -22,6 +23,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        loginUser();
 
         android.support.v7.widget.Toolbar toolbar = (android.support.v7.widget.Toolbar) findViewById(R.id.my_toolbar);
         setSupportActionBar(toolbar);
@@ -46,11 +49,6 @@ public class MainActivity extends AppCompatActivity {
         });
 
         changeFragment(0);
-
-        Networking.getData(0, new String[]{"cs1110200", "john"}, new Networking.VolleyCallback() {
-            @Override
-            public void onSuccess(String result) {}
-        });
     }
 
     public boolean onCreateOptionsMenu (Menu menu){
@@ -87,6 +85,28 @@ public class MainActivity extends AppCompatActivity {
 
     public void signOutClicked (View view){
         drawerLayout.closeDrawer(drawerSliderLayout);
+        Networking.getData(1, new String[0], new Networking.VolleyCallback() {
+            @Override
+            public void onSuccess(String result) {
+                ((MyApplication) getApplication()).setMyUser(null);
+                loginUser();
+            }
+        });
+    }
+
+    private void loginUser(){
+        MyApplication myApplication = (MyApplication) getApplication();
+        if (!myApplication.isUserLoggedIn()) {
+            Intent intent = new Intent(this, LoginActivity.class);
+            startActivity(intent);
+        }
+    }
+
+    public void onResume() {
+        super.onResume();
+
+        loginUser();
+        changeFragment(0);
     }
 
 }

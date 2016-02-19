@@ -18,6 +18,7 @@ import java.net.CookieManager;
 public class MyApplication extends Application
 {
     public static RequestQueue mRequestQueue;
+    private User MyUser = null;
 
     @Override
     public void onCreate() {
@@ -29,5 +30,16 @@ public class MyApplication extends Application
         CookieHandler.setDefault(manager);
     }
 
+    boolean isUserLoggedIn(){
+        return MyUser!=null;
+    }
+
+    public void setMyUser (User user){
+        MyUser = user;
+    }
+
+    public User getMyUser(){
+        return MyUser;
+    }
     // Getter for RequestQueue or just make it public
 }
