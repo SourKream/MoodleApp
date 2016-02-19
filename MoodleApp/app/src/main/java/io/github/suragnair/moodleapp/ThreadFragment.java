@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -53,11 +54,24 @@ public class ThreadFragment extends Fragment{
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent intent = new Intent(getActivity(), ThreadActivity.class);
-                intent.putExtra("thread_id",threadList.get(position).ID);
+                intent.putExtra("thread_id", threadList.get(position).ID);
                 startActivity(intent);
             }
         });
+        FloatingActionButton fab = (FloatingActionButton) view.findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                newThreadClicked(v);
+            }
+        });
         return view;
+    }
+
+    public void newThreadClicked (View view){
+        Intent intent = new Intent(getActivity(), NewThreadActivity.class);
+        intent.putExtra("courseCode",CourseName);
+        startActivity(intent);
     }
 
     public void addThreads()
@@ -144,5 +158,4 @@ public class ThreadFragment extends Fragment{
                     return convertView;
                 }
             }
-
 }

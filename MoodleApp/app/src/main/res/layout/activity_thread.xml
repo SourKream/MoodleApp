@@ -73,6 +73,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/commentsListView"
-        android:layout_below="@id/threadDetails"/>
+        android:layout_below="@id/threadDetails"
+        android:clickable="false"/>
 
 </RelativeLayout>
