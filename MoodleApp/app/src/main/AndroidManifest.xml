@@ -17,6 +17,12 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity android:name=".CourseActivity"
+                  android:theme="@style/MyMaterialTheme"
+                  android:parentActivityName="io.github.suragnair.moodleapp.MainActivity">
+
+        </activity>
         <activity android:name=".LoginActivity"/>
     </application>
 
