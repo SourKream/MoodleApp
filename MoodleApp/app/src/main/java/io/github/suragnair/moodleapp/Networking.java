@@ -27,9 +27,9 @@ public class Networking {
             new String[] {"/courses/assignment.json/",""},                      //6- assignment #
             new String[] {"/courses/course.json/","/grades"},                   //7- course code
             new String[] {"/courses/course.json/","/threads"},                  //8- course code
-            new String[] {"/threads/thread.json/",""}                           //9- thread #
-            //new String[] {"/threads/new.json?title=","&description=","&course_code",""},
-            //new String[] {"/threads/post_comment.json?thread_id=","&description=",""};
+            new String[] {"/threads/thread.json/",""},                           //9- thread #
+            new String[] {"/threads/new.json?title=","&description=","&course_code",""}, //10
+            new String[] {"/threads/post_comment.json?thread_id=","&description=",""}    //11
      };
 
     public interface VolleyCallback{

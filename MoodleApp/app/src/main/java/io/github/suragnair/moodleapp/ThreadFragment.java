@@ -2,12 +2,14 @@ package io.github.suragnair.moodleapp;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
@@ -47,6 +49,14 @@ public class ThreadFragment extends Fragment{
         View view = inflater.inflate(R.layout.thread_fragment, container, false);
         threadListView = (ListView) view.findViewById(R.id.ThreadList);
         threadListView.setAdapter(new CustomListAdapter(this.getActivity(), threadList));
+        threadListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent intent = new Intent(getActivity(), ThreadActivity.class);
+                intent.putExtra("thread_id",threadList.get(position).ID);
+                startActivity(intent);
+            }
+        });
         return view;
     }
 
@@ -62,7 +72,7 @@ public class ThreadFragment extends Fragment{
                     if(length>0) {
                         for (int i = 0; i < length; i++) {
                             JSONObject thread = jsonThreadList.getJSONObject(i);
-                            threadList.add(new Thread(thread.getString("title"), thread.getString("description"), thread.getString("updated_at")));
+                            threadList.add(new Thread(thread.getString("title"), thread.getString("description"), thread.getString("updated_at"), thread.getInt("id")));
                         }
                     }
                     CustomListAdapter adapter = (CustomListAdapter) threadListView.getAdapter();
@@ -78,12 +88,14 @@ public class ThreadFragment extends Fragment{
         public String Title;
         public String Description;
         public String UpdatedAt;
+        int ID;
 
-        public Thread(String title, String description, String updatedat)
+        public Thread(String title, String description, String updatedat, int id)
         {
             Title = title;
             Description = description;
             UpdatedAt = updatedat;
+            ID = id;
         }
     }
 
