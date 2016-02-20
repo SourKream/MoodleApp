@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,13 +20,13 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GradeFragment extends Fragment{
+public class CourseGradesFragment extends Fragment{
 
     private List<Grade> gradeList = new ArrayList<Grade>();
     private ListView GradeListView = null;
     public String CourseName;
 
-    public GradeFragment() {
+    public CourseGradesFragment() {
         // Required empty public constructor
     }
 
@@ -42,7 +43,7 @@ public class GradeFragment extends Fragment{
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.grade_fragment, container, false);
+        View view = inflater.inflate(R.layout.fragment_course_grade, container, false);
         GradeListView = (ListView) view.findViewById(R.id.GradesList);
         GradeListView.setAdapter(new CustomListAdapter(this.getActivity(), gradeList));
         return view;
@@ -55,15 +56,14 @@ public class GradeFragment extends Fragment{
                 try {
                     JSONObject response = new JSONObject(result);
                     JSONArray jsonGradeList = new JSONArray(response.getString("grades"));
-                    int length = jsonGradeList.length();
-                    if(length>0) {
+
                         for (int i = 0; i < jsonGradeList.length(); i++) {
                             JSONObject grade = jsonGradeList.getJSONObject(i);
                             gradeList.add(new Grade(String.valueOf(i + 1), grade.getString("name"),
                                     grade.getString("score"), grade.getString("out_of"),
                                     grade.getString("weightage")));
                         }
-                    }
+
                     CustomListAdapter adapter = (CustomListAdapter) GradeListView.getAdapter();
                     adapter.notifyDataSetChanged();
                 } catch (JSONException e) {
@@ -140,7 +140,7 @@ public class GradeFragment extends Fragment{
 
             ItemName.setText(grade.ItemName);
             SNo.setText(grade.SerialNo);
-            score.setText(grade.Score);
+            score.setText(scoreText);
             weight.setText(grade.Weight);
             absoluteMarks.setText(Marks);
 

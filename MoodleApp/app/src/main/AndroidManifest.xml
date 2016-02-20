@@ -24,7 +24,8 @@
             android:theme="@style/MyMaterialTheme" />
         <activity android:name=".LoginActivity" />
         <activity android:name=".ThreadActivity" />
-        <activity android:name=".NewThreadActivity"></activity>
+        <activity android:name=".NewThreadActivity"/>
+        <activity android:name=".AssignmentActivity"/>
     </application>
 
 </manifest>

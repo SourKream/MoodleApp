@@ -5,6 +5,7 @@ import android.app.Notification;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -31,7 +32,8 @@ public class NotificationsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_notifications, container, false);
-
+        ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle("Notifications");
+        
         // TODO Fragment populated from server every time
         if (((MyApplication) getActivity().getApplication()).isUserLoggedIn())
             populateNotificationsFromServer();

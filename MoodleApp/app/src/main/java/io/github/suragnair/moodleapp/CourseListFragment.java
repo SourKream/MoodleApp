@@ -3,8 +3,10 @@ package io.github.suragnair.moodleapp;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,6 +23,8 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
+//TODO: add colours to styles and use from there
+
 public class CourseListFragment extends Fragment {
 
     private List<Course> courseList = new ArrayList<>();
@@ -34,6 +38,8 @@ public class CourseListFragment extends Fragment {
         // TODO Fragment populated from server every time
         if (((MyApplication) getActivity().getApplication()).isUserLoggedIn())
             populateCourseListFromServer();
+        
+        ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle("Courses");
 
         courseListView = (ListView) view.findViewById(R.id.courseList);
         courseListView.setAdapter(new CustomListAdapter(this.getActivity(), courseList));
@@ -132,10 +138,17 @@ public class CourseListFragment extends Fragment {
 
             TextView courseCode = (TextView) convertView.findViewById(R.id.courseCode);
             TextView courseDescription = (TextView) convertView.findViewById(R.id.courseDescription);
-
+            TextView LTP = (TextView) convertView.findViewById(R.id.ltp);
             Course course = courseList.get(position);
+
             courseCode.setText(course.CourseCode);
+            courseCode.setTypeface(MainActivity.MyriadPro);
+
             courseDescription.setText(course.CourseDescription);
+            courseDescription.setTypeface(MainActivity.Garibaldi);
+
+            LTP.setText("(2-0-2)"); //TODO: link here pls sk
+            LTP.setTypeface(MainActivity.MyriadPro);
 
             return convertView;
         }

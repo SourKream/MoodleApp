@@ -1,5 +1,6 @@
 package io.github.suragnair.moodleapp;
 
+import android.content.Intent;
 import android.util.Log;
 import android.app.Activity;
 import android.content.Context;
@@ -8,6 +9,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -19,13 +21,13 @@ import org.json.JSONException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AssignmentFragment extends Fragment{
+public class CourseAssignmentFragment extends Fragment{
 
     private List<Assignment> assignmentList = new ArrayList<Assignment>();
     private ListView AssgnListView =null;
     public String CourseName;
 
-    public AssignmentFragment() {
+    public CourseAssignmentFragment() {
         // Required empty public constructor
     }
 
@@ -42,11 +44,22 @@ public class AssignmentFragment extends Fragment{
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.assignment_fragment, container, false);
+        View view = inflater.inflate(R.layout.fragment_course_assignment, container, false);
 
 
         AssgnListView = (ListView) view.findViewById(R.id.AssignmentList);
         AssgnListView.setAdapter(new CustomListAdapter(this.getActivity(), assignmentList));
+        AssgnListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                String assignment_id = assignmentList.get(position).AssignID;
+                Intent intent = new Intent(getActivity(), AssignmentActivity.class);
+                intent.putExtra("coursename", CourseName);
+                intent.putExtra("assignment_id", assignment_id);
+                startActivity(intent);
+            }
+        });
+
         return view;
     }
 
@@ -58,13 +71,13 @@ public class AssignmentFragment extends Fragment{
                 try {
                     JSONObject response = new JSONObject(result);
                     JSONArray jsonAssignmentList = new JSONArray(response.getString("assignments"));
-                    int length = jsonAssignmentList.length();
-                    if(length>0) {
-                        for (int i = 0; i < length; i++) {
+
+                        for (int i = 0; i < jsonAssignmentList.length(); i++) {
                             JSONObject assignment = jsonAssignmentList.getJSONObject(i);
-                            assignmentList.add(new Assignment(String.valueOf(i + 1), assignment.getString("name"), assignment.getString("deadline")));
+                            assignmentList.add(new Assignment(String.valueOf(i + 1), assignment.getString("name"),
+                                    assignment.getString("deadline"), assignment.getString("id")));
                         }
-                    }
+
                     CustomListAdapter adapter = (CustomListAdapter) AssgnListView.getAdapter();
                     adapter.notifyDataSetChanged();
                 } catch (JSONException e){
@@ -79,12 +92,14 @@ public class AssignmentFragment extends Fragment{
         public String Name;
         public String SerialNo;
         public String TimeRemaining;
+        public String AssignID;
 
-        public Assignment(String serialNo, String name, String timeRemaining)
+        public Assignment(String serialNo, String name, String timeRemaining, String assignID)
         {
             Name = name;
             SerialNo = serialNo;
             TimeRemaining = timeRemaining;
+            AssignID = assignID;
         }
     }
 
@@ -121,14 +136,24 @@ public class AssignmentFragment extends Fragment{
             if (convertView == null)
                 convertView = inflater.inflate(R.layout.assignment_list_item, null);
 
-            TextView assgnName = (TextView) convertView.findViewById(R.id.Name);
-            TextView assgnSNo = (TextView) convertView.findViewById(R.id.S_No_);
-            TextView assgnTime = (TextView) convertView.findViewById(R.id.timeRemainig);
+            TextView assgnName     = (TextView) convertView.findViewById(R.id.Name);
+            TextView assgnDeadline = (TextView) convertView.findViewById(R.id.timeRemaining);
+            TextView assgnCreated  = (TextView) convertView.findViewById(R.id.datePosted);
+            TextView assgnSNo      = (TextView) convertView.findViewById(R.id.SNo);
 
             Assignment assignment = assignmentsList.get(position);
+
             assgnName.setText(assignment.Name);
+            assgnName.setTypeface(MainActivity.Garibaldi);
+
             assgnSNo.setText(assignment.SerialNo);
-            assgnTime.setText(assignment.TimeRemaining);
+            //assgnSNo.setTypeface(MainActivity.Garibaldi);
+
+            assgnDeadline.setText(assignment.TimeRemaining);
+            //assgnDeadline.setTypeface(MainActivity.MyriadPro);
+
+            assgnCreated.setText("0000-00-00"); //TODO: pls link time of creation karan
+            //assgnCreated.setTypeface(MainActivity.MyriadPro);
 
             return convertView;
         }
