@@ -1,6 +1,7 @@
 package io.github.suragnair.moodleapp;
 
 import android.app.Activity;
+import android.content.ClipData;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -124,26 +125,30 @@ public class CourseGradesFragment extends Fragment{
             if (convertView == null)
                 convertView = inflater.inflate(R.layout.grade_item_layout, null);
 
-            TextView ItemName = (TextView) convertView.findViewById(R.id.GradeItem);
-            TextView SNo = (TextView) convertView.findViewById(R.id.S_No_);
-            TextView score = (TextView) convertView.findViewById(R.id.score);
-            TextView weight = (TextView) convertView.findViewById(R.id.weight);
-            TextView absoluteMarks = (TextView) convertView.findViewById(R.id.marks);
+            TextView ItemName = (TextView) convertView.findViewById(R.id.courseGradeTitle);
+            TextView SNo = (TextView) convertView.findViewById(R.id.courseGradeSNo);
+            TextView score = (TextView) convertView.findViewById(R.id.courseGradeScore);
+            TextView weight = (TextView) convertView.findViewById(R.id.courseGradeWeight);
+            TextView absoluteMarks = (TextView) convertView.findViewById(R.id.courseGradeMarks);
             Grade grade = gradesList.get(position);
 
-            String scoreText = grade.Score + " out of " + grade.OutOf;
+            String scoreText = grade.Score + "/" + grade.OutOf;
             int sc = Integer.valueOf(grade.Score);
             int of = Integer.valueOf(grade.OutOf);
             int wt = Integer.valueOf(grade.Weight);
-            int mks = (sc/of)*wt;
+            int mks = (int) (((double)sc/(double)of)*(double)wt);
             String Marks = String.valueOf(mks);
 
             ItemName.setText(grade.ItemName);
+            ItemName.setTypeface(MainActivity.Garibaldi);
+
             SNo.setText(grade.SerialNo);
             score.setText(scoreText);
             weight.setText(grade.Weight);
             absoluteMarks.setText(Marks);
 
+            //TODO: Karan add an object in the end for title
+            //      keep its SNo blank (""), Name me 'Total', Score me '-', weight me sum of weights, marks me total marks
             return convertView;
         }
     }

@@ -8,6 +8,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -141,6 +142,9 @@ public class NotificationsFragment extends Fragment {
             TextView notificationDescription = (TextView) convertView.findViewById(R.id.notification);
 
             Notification notification = notificationsList.get(position);
+
+            //TODO: get the title of the corresponding Post
+            //notificationDescription.setText(Html.fromHtml(notification.description).toString());
             notificationDescription.setText(notification.description);
             if (notificationsList.get(position).isSeen == 0)
                 convertView.setBackgroundColor(getResources().getColor(R.color.highlightColor));

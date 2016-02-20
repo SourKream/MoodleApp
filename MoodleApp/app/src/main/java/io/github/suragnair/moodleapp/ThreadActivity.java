@@ -73,6 +73,7 @@ public class ThreadActivity extends AppCompatActivity {
                     initialiseListView();
 
                     threadTitle.setText(courseThread.title);
+                    threadTitle.setTypeface(MainActivity.Garibaldi);
                     threadDescription.setText(courseThread.description);
                     updateComments();
                 } catch (JSONException e) {
@@ -216,8 +217,9 @@ public class ThreadActivity extends AppCompatActivity {
 
             Comment comment = commentList.get(commentList.size() - position - 1);
             User user = commentUserList.get(commentUserList.size() - position - 1);
-            commentUsername.setText(user.firstName + " " + user.lastName);
             commentDescription.setText(comment.Description);
+            commentUsername.setText(user.firstName + " " + user.lastName);
+            commentUsername.setTypeface(MainActivity.MyriadPro);
 
             return convertView;
         }
