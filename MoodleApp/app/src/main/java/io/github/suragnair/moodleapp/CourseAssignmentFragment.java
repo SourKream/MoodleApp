@@ -52,10 +52,9 @@ public class CourseAssignmentFragment extends Fragment{
         AssgnListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                String assignment_id = assignmentList.get(position).AssignID;
                 Intent intent = new Intent(getActivity(), AssignmentActivity.class);
                 intent.putExtra("coursename", CourseName);
-                intent.putExtra("assignment_id", assignment_id);
+                intent.putExtra("assignment_id", Integer.toString(assignmentList.get(position).ID));
                 startActivity(intent);
             }
         });
@@ -71,15 +70,9 @@ public class CourseAssignmentFragment extends Fragment{
                 try {
                     JSONObject response = new JSONObject(result);
                     JSONArray jsonAssignmentList = new JSONArray(response.getString("assignments"));
-
-                        for (int i = 0; i < jsonAssignmentList.length(); i++) {
-                            JSONObject assignment = jsonAssignmentList.getJSONObject(i);
-                            assignmentList.add(new Assignment(String.valueOf(i + 1), assignment.getString("name"),
-                                    assignment.getString("deadline"), assignment.getString("id")));
-                        }
-
-                    CustomListAdapter adapter = (CustomListAdapter) AssgnListView.getAdapter();
-                    adapter.notifyDataSetChanged();
+                    for (int i = 0; i < jsonAssignmentList.length(); i++)
+                        assignmentList.add(new Assignment(jsonAssignmentList.getString(i)));
+                    ((CustomListAdapter) AssgnListView.getAdapter()).notifyDataSetChanged();
                 } catch (JSONException e){
                     Log.d("Json Exception", "Response from server wasn't JSON");
                 }
@@ -88,18 +81,28 @@ public class CourseAssignmentFragment extends Fragment{
 
     }
 
-    public class Assignment{
-        public String Name;
-        public String SerialNo;
-        public String TimeRemaining;
-        public String AssignID;
+    public static class Assignment{
+        String CreatedAt;
+        String Deadline;
+        String Description;
+        Integer ID;
+        Integer LateDaysAllowed;
+        String Name;
+        Integer CourseID;
 
-        public Assignment(String serialNo, String name, String timeRemaining, String assignID)
-        {
-            Name = name;
-            SerialNo = serialNo;
-            TimeRemaining = timeRemaining;
-            AssignID = assignID;
+        public Assignment (String JsonString){
+            try {
+                JSONObject assignment = new JSONObject(JsonString);
+                CreatedAt = assignment.getString("created_at");
+                Deadline = assignment.getString("deadline");
+                Description = assignment.getString("description");
+                ID = assignment.getInt("id");
+                LateDaysAllowed = assignment.getInt("late_days_allowed");
+                Name = assignment.getString("name");
+                CourseID = assignment.getInt("registered_course_id");
+            } catch (JSONException e) {
+                Log.d("JSON Exception : ", e.getMessage());
+            }
         }
     }
 
@@ -146,13 +149,13 @@ public class CourseAssignmentFragment extends Fragment{
             assgnName.setText(assignment.Name);
             assgnName.setTypeface(MainActivity.Garibaldi);
 
-            assgnSNo.setText(assignment.SerialNo);
+            assgnSNo.setText(Integer.toString(position + 1));
             //assgnSNo.setTypeface(MainActivity.Garibaldi);
 
-            assgnDeadline.setText(assignment.TimeRemaining);
+            assgnDeadline.setText(assignment.Deadline);
             //assgnDeadline.setTypeface(MainActivity.MyriadPro);
 
-            assgnCreated.setText("0000-00-00"); //TODO: pls link time of creation karan
+            assgnCreated.setText(assignment.CreatedAt);
             //assgnCreated.setTypeface(MainActivity.MyriadPro);
 
             return convertView;

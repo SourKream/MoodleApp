@@ -144,10 +144,10 @@ public class CourseListFragment extends Fragment {
             courseCode.setText(course.CourseCode.toUpperCase());
             courseCode.setTypeface(MainActivity.MyriadPro);
 
-            courseDescription.setText(course.CourseDescription);
+            courseDescription.setText(course.CourseName);
             courseDescription.setTypeface(MainActivity.Garibaldi);
 
-            LTP.setText("(2-0-2)"); //TODO: link here pls sk
+            LTP.setText("(" + course.LTP + ")");
             LTP.setTypeface(MainActivity.MyriadPro);
 
             return convertView;
