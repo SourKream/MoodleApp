@@ -141,7 +141,7 @@ public class CourseListFragment extends Fragment {
             TextView LTP = (TextView) convertView.findViewById(R.id.ltp);
             Course course = courseList.get(position);
 
-            courseCode.setText(course.CourseCode);
+            courseCode.setText(course.CourseCode.toUpperCase());
             courseCode.setTypeface(MainActivity.MyriadPro);
 
             courseDescription.setText(course.CourseDescription);
