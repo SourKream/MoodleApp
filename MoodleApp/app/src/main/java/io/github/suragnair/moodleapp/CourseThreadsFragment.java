@@ -143,13 +143,20 @@ public class CourseThreadsFragment extends Fragment{
                     if (convertView == null)
                         convertView = inflater.inflate(R.layout.thread_list_item, null);
 
-                    TextView threadTitle = (TextView) convertView.findViewById(R.id.title);
-                    TextView threadCreatedAt = (TextView) convertView.findViewById(R.id.createdAt);
-                    TextView threadLastUpdate = (TextView) convertView.findViewById(R.id.lastUpdate);
+                    TextView threadTitle       = (TextView) convertView.findViewById(R.id.thread_title);
+                    TextView threadCreatedAt   = (TextView) convertView.findViewById(R.id.thread_createdAt);
+                    TextView threadLastUpdate  = (TextView) convertView.findViewById(R.id.thread_lastUpdate);
+                    TextView threadDescription = (TextView) convertView.findViewById(R.id.thread_description);
+                    TextView threadID         = (TextView) convertView.findViewById(R.id.thread_SNo);
 
                     Thread thread = threadList.get(position);
+
                     threadTitle.setText(thread.Title);
-                    threadCreatedAt.setText(thread.Description);
+                    threadTitle.setTypeface(MainActivity.Garibaldi);
+
+                    threadID.setText("2"); //TODO: Karan- link thread id here
+                    threadDescription.setText(thread.Description);
+                    threadCreatedAt.setText("0000-00-00"); //TODO: Karan- link created and updated times here
                     threadLastUpdate.setText(thread.UpdatedAt);
 
                     return convertView;

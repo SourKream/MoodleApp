@@ -137,15 +137,15 @@ public class CourseListFragment extends Fragment {
                 convertView = inflater.inflate(R.layout.courses_list_item, null);
 
             TextView courseCode = (TextView) convertView.findViewById(R.id.courseCode);
-            TextView courseDescription = (TextView) convertView.findViewById(R.id.courseDescription);
+            TextView courseName = (TextView) convertView.findViewById(R.id.courseDescription);
             TextView LTP = (TextView) convertView.findViewById(R.id.ltp);
             Course course = courseList.get(position);
 
             courseCode.setText(course.CourseCode.toUpperCase());
             courseCode.setTypeface(MainActivity.MyriadPro);
 
-            courseDescription.setText(course.CourseDescription);
-            courseDescription.setTypeface(MainActivity.Garibaldi);
+            courseName.setText(course.CourseName);
+            courseName.setTypeface(MainActivity.Garibaldi);
 
             LTP.setText("(2-0-2)"); //TODO: link here pls sk
             LTP.setTypeface(MainActivity.MyriadPro);

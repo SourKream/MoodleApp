@@ -24,7 +24,7 @@ public class CourseActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_course);
 
-        CourseTitle = getIntent().getStringExtra("coursename");
+        CourseTitle = getIntent().getStringExtra("coursename").toUpperCase();
         setTitle(CourseTitle);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
