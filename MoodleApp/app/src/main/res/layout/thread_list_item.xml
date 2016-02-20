@@ -14,7 +14,6 @@
         android:text="#"
         android:textSize="25dp"
         android:paddingTop="3dp"
-        android:paddingLeft="5dp"
         android:layout_weight="0.3"
         android:gravity="center"/>
 
@@ -41,7 +40,7 @@
             android:id="@+id/thread_description"
             android:paddingRight="5dp"
             android:paddingLeft="5dp"
-            android:textColor="#7c7c82"
+            android:textColor="#000000"
             android:text="Thread Description"
             android:textSize="15dp"
             android:layout_weight="3"/>

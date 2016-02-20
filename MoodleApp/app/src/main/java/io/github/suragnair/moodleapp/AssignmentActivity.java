@@ -7,6 +7,7 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -55,7 +56,9 @@ public class AssignmentActivity extends AppCompatActivity {
 
     private void UpdateUI (){
         assignTitle.setText(assignment.Name);
-        assignDescription.setText(assignment.Description);
+        assignTitle.setTypeface(MainActivity.Garibaldi);
+
+        assignDescription.setText(Html.fromHtml(assignment.Description));
         assignDeadline.setText(assignment.Deadline);
         assignLDA.setText(Integer.toString(assignment.LateDaysAllowed));
         assignCreateDate.setText(assignment.CreatedAt);
