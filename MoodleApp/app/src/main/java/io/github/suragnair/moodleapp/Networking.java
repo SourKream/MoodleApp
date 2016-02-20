@@ -7,12 +7,6 @@ import com.android.volley.Response;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.VolleyError;
 
-/**
- * Created by snair on 16/02/16.
- */
-
-// TODO: implement for threads
-
 public class Networking {
 
     private final static String urlBase = "http://10.0.2.2:8000";
@@ -29,8 +23,9 @@ public class Networking {
             new String[] {"/courses/course.json/","/threads"},                  //8- course code
             new String[] {"/threads/thread.json/",""},                           //9- thread #
             new String[] {"/threads/new.json?title=","&description=","&course_code=",""}, //10
-            new String[] {"/threads/post_comment.json?thread_id=","&description=",""}    //11
-     };
+            new String[] {"/threads/post_comment.json?thread_id=","&description=",""},    //11
+            new String[] {"/users/user.json/",""}                                         //12
+    };
 
     public interface VolleyCallback{
         void onSuccess(String result);

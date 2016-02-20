@@ -54,7 +54,7 @@ public class CourseAssignmentFragment extends Fragment{
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent intent = new Intent(getActivity(), AssignmentActivity.class);
                 intent.putExtra("coursename", CourseName);
-                intent.putExtra("assignment_id", Integer.toString(assignmentList.get(position).ID));
+                intent.putExtra("assignment_id",assignmentList.get(position).ID);
                 startActivity(intent);
             }
         });

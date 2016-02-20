@@ -27,7 +27,7 @@ public class ThreadActivity extends AppCompatActivity {
     private CourseThread courseThread = null;
     private ListView commentsListView = null;
     private TextView threadTitle;
-//    private TextView threadCreatorName;
+    private TextView threadCreatorName;
     private TextView threadDescription;
 
     @Override
@@ -36,7 +36,7 @@ public class ThreadActivity extends AppCompatActivity {
         setContentView(R.layout.activity_thread);
 
         threadTitle = (TextView) findViewById(R.id.threadTitle);
-//        threadCreatorName = (TextView) findViewById(R.id.threadUserName);
+        threadCreatorName = (TextView) findViewById(R.id.threadUserName);
         threadDescription = (TextView) findViewById(R.id.threadDescription);
 
         int threadID = getIntent().getIntExtra("thread_id",0);
@@ -56,11 +56,23 @@ public class ThreadActivity extends AppCompatActivity {
                     String jsonCommentUsers = response.getString("comment_users");
                     courseThread = new CourseThread(jsonThread, jsonCourse, jsonComments, jsonCommentUsers);
 
-                    // TODO Get Thread Creator from server
+                    Networking.getData(12, new String[]{Integer.toString(courseThread.userID)}, new Networking.VolleyCallback() {
+                        @Override
+                        public void onSuccess(String result) {
+                            try {
+                                JSONObject response = new JSONObject(result);
+                                courseThread.setThreadCreator(response.getString("user"));
+                                String fullName = courseThread.threadCreator.firstName + " " + courseThread.threadCreator.lastName;
+                                threadCreatorName.setText(fullName);
+                            } catch (JSONException e) {
+                                Log.d("JSON Exception : ", e.getMessage());
+                            }
+                        }
+                    });
+
                     initialiseListView();
 
                     threadTitle.setText(courseThread.title);
-                    // threadCreatorName.setText(courseThread.threadCreator.firstName + " " + courseThread.threadCreator.lastName);
                     threadDescription.setText(courseThread.description);
                     updateComments();
                 } catch (JSONException e) {

@@ -27,79 +27,54 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-/**
- * Created by karan on 20/2/16.
- */
 public class AssignmentActivity extends AppCompatActivity {
 
-    private Toolbar toolbar;
-    private String CourseTitle;
-    private String AssignmentId;
-
-    private String Title;
-    private String Details;
-    private String DateOfSubmission;
-    private String LateDaysAllowed;
-    private String TimeRemaining;
+    private CourseAssignmentFragment.Assignment assignment;
+    private TextView assignTitle;
+    private TextView assignDescription;
+    private TextView assignDeadline;
+    private TextView assignLDA;
+    private TextView assignCreateDate;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_assignment);
 
-        CourseTitle = getIntent().getStringExtra("coursename");
-        AssignmentId = getIntent().getStringExtra("assignment_id");
+        String CourseTitle = getIntent().getStringExtra("coursename");
+        Integer AssignmentID = getIntent().getIntExtra("assignment_id",0);
 
-        toolbar = (Toolbar) findViewById(R.id.assignment_activity_toolbar);
-        setSupportActionBar(toolbar);
+        assignTitle = (TextView) findViewById(R.id.assign_title);
+        assignDescription = (TextView) findViewById(R.id.assign_details);
+        assignDeadline = (TextView) findViewById(R.id.deadline_text);
+        assignCreateDate = (TextView) findViewById(R.id.created_on_text);
+        assignLDA = (TextView) findViewById(R.id.LDA_text);
 
-        setTitle(CourseTitle);
-
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
-        getData();
-
-        TextView title = (TextView) findViewById(R.id.assign_title);
-        TextView details = (TextView) findViewById(R.id.details);
-        TextView dos = (TextView) findViewById(R.id.DOS_text);
-        TextView late_days_allowed = (TextView) findViewById(R.id.late_days_text);
-        TextView timeRem = (TextView) findViewById(R.id.time_rem_text);
-
-        title.setText(Title);
-        details.setText(Details);
-        dos.setText(DateOfSubmission);
-        late_days_allowed.setText(LateDaysAllowed);
-        timeRem.setText(getTimeRem());
-
-
+        getAssignmentFromServer(AssignmentID);
     }
 
-    public void getData()
+    private void UpdateUI (){
+        assignTitle.setText(assignment.Name);
+        assignDescription.setText(assignment.Description);
+        assignDeadline.setText(assignment.Deadline);
+        assignLDA.setText(Integer.toString(assignment.LateDaysAllowed));
+        assignCreateDate.setText(assignment.CreatedAt);
+    }
+
+    public void getAssignmentFromServer (int AssignmentID)
     {
-        Networking.getData(6, new String[]{AssignmentId}, new Networking.VolleyCallback() {
+        Networking.getData(6, new String[]{Integer.toString(AssignmentID)}, new Networking.VolleyCallback() {
             @Override
             public void onSuccess(String result) {
                 try {
                     JSONObject response = new JSONObject(result);
-                    JSONObject assignment = response.getJSONObject("assignment");
-                    Title = assignment.getString("name");
-                    Details = assignment.getString("description");
-                    DateOfSubmission = assignment.getString("deadline");
-                    LateDaysAllowed = assignment.getString("late_days_allowed");
-
+                    assignment = new CourseAssignmentFragment.Assignment(response.getString("assignment"));
+                    UpdateUI();
                 } catch (JSONException e) {
-                    Log.d("Json Exception", "Response from server wasn't JSON");
+                    Log.d("JSON Exception : ", e.getMessage());
                 }
             }
         });
     }
-
-    public String getTimeRem()
-    {
-        String time_rem = "";
-        //TODO Write function for remaining time
-        return time_rem;
-    }
-
 }
 
