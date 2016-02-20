@@ -73,13 +73,41 @@ public class CourseListFragment extends Fragment {
         });
     }
 
-    public class Course{
+    public static class Course{
         public String CourseCode;
         public String CourseDescription;
+        String CourseName;
+        int ID;
+        int Credits;
+        String LTP;
 
+        // TODO Correct this class
         public Course (String code, String description){
             CourseCode = code;
             CourseDescription = description;
+        }
+
+        public Course (String code, String desc, String name, String ltp, int id, int credits){
+            CourseCode = code;
+            CourseDescription = desc;
+            CourseName = name;
+            LTP = ltp;
+            Credits = credits;
+            ID = id;
+        }
+
+        public Course (String JsonString){
+            try {
+                JSONObject course = new JSONObject(JsonString);
+                ID = course.getInt("id");
+                Credits = course.getInt("credits");
+                CourseName = course.getString("name");
+                CourseCode = course.getString("code");
+                CourseDescription = course.getString("description");
+                LTP = course.getString("l_t_p");
+            } catch (JSONException e) {
+                Log.d("JSON Exception : ", e.getMessage());
+            }
         }
     }
 

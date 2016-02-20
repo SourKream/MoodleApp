@@ -10,7 +10,6 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.widget.TextView;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -30,7 +29,7 @@ public class CourseActivity extends AppCompatActivity {
         CourseTitle = getIntent().getStringExtra("coursename");
 
         setTitle(CourseTitle);
-        setContentView(R.layout.course_activity_main);
+        setContentView(R.layout.activity_course);
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -49,11 +48,11 @@ public class CourseActivity extends AppCompatActivity {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
 
         Bundle bundle = new Bundle();
-        bundle.putString("coursename",CourseTitle);
+        bundle.putString("coursename", CourseTitle);
 
-        Fragment assignment_fragment = new AssignmentFragment();
-        Fragment thread_fragment = new ThreadFragment();
-        Fragment grade_fragment = new GradeFragment();
+        Fragment assignment_fragment = new CourseAssignmentFragment();
+        Fragment thread_fragment = new CourseThreadsFragment();
+        Fragment grade_fragment = new CourseGradesFragment();
 
         assignment_fragment.setArguments(bundle);
         thread_fragment.setArguments(bundle);
