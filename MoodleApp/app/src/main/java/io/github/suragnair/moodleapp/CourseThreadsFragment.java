@@ -24,13 +24,9 @@ import java.util.List;
 
 public class CourseThreadsFragment extends Fragment{
 
-    private List<Thread> threadList = new ArrayList<Thread>();
+    private List<ThreadActivity.CourseThread> threadList = new ArrayList<ThreadActivity.CourseThread>();
     private ListView threadListView;
     public String CourseName;
-
-    public CourseThreadsFragment() {
-        // Required empty public constructor
-    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -80,86 +76,67 @@ public class CourseThreadsFragment extends Fragment{
                 try {
                     JSONObject response = new JSONObject(result);
                     JSONArray jsonThreadList = new JSONArray(response.getString("course_threads"));
-
-                        for (int i = 0; i < jsonThreadList.length(); i++) {
-                            JSONObject thread = jsonThreadList.getJSONObject(i);
-                            threadList.add(new Thread(thread.getString("title"), thread.getString("description"), thread.getString("updated_at"), thread.getInt("id")));
-                        }
-
+                    for (int i = 0; i < jsonThreadList.length(); i++)
+                        threadList.add(new ThreadActivity.CourseThread (jsonThreadList.getString(i)));
                     CustomListAdapter adapter = (CustomListAdapter) threadListView.getAdapter();
                     adapter.notifyDataSetChanged();
                 } catch (JSONException e) {
-                    Log.d("Json Exception", "Response from server wasn't JSON");
+                    Log.d("JSON Exception : ", e.getMessage());
                 }
             }
         });
     }
 
-    public class Thread{
-        public String Title;
-        public String Description;
-        public String UpdatedAt;
-        int ID;
-
-        public Thread(String title, String description, String updatedat, int id)
-        {
-            Title = title;
-            Description = description;
-            UpdatedAt = updatedat;
-            ID = id;
-        }
-    }
-
     public class CustomListAdapter extends BaseAdapter{
 
-                private Activity activity;
-                private LayoutInflater inflater;
-                private List<Thread> threadList;
+        private Activity activity;
+        private LayoutInflater inflater;
+        private List<ThreadActivity.CourseThread> threadList;
 
-                public CustomListAdapter(Activity activity, List<Thread> threadList){
-                this.activity = activity;
-                this.threadList = threadList;
-                }
+        public CustomListAdapter(Activity activity, List<ThreadActivity.CourseThread> threadList){
+            this.activity = activity;
+            this.threadList = threadList;
+        }
 
-               @Override
-                public int getCount() {
+        @Override
+        public int getCount() {
                     return threadList.size();
                 }
 
-                @Override
-                public Object getItem(int position) {
+        @Override
+        public Object getItem(int position) {
                     return threadList.get(position);
                 }
 
-               @Override
-               public long getItemId(int position) {
+        @Override
+        public long getItemId(int position) {
                     return position;
                 }
 
-                @Override
-                public View getView(int position, View convertView, ViewGroup parent) {
-                    if (inflater == null)
-                       inflater = (LayoutInflater) activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                    if (convertView == null)
-                        convertView = inflater.inflate(R.layout.thread_list_item, null);
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            if (inflater == null)
+                inflater = (LayoutInflater) activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            if (convertView == null)
+                convertView = inflater.inflate(R.layout.thread_list_item, null);
 
-                    TextView threadTitle       = (TextView) convertView.findViewById(R.id.thread_title);
-                    TextView threadCreatedAt   = (TextView) convertView.findViewById(R.id.thread_createdAt);
-                    TextView threadLastUpdate  = (TextView) convertView.findViewById(R.id.thread_lastUpdate);
-                    TextView threadDescription = (TextView) convertView.findViewById(R.id.thread_description);
-                    TextView threadID         = (TextView) convertView.findViewById(R.id.thread_SNo);
+            TextView threadTitle       = (TextView) convertView.findViewById(R.id.thread_title);
+            TextView threadCreatedAt   = (TextView) convertView.findViewById(R.id.thread_createdAt);
+            TextView threadLastUpdate  = (TextView) convertView.findViewById(R.id.thread_lastUpdate);
+            TextView threadDescription = (TextView) convertView.findViewById(R.id.thread_description);
+            TextView threadID         = (TextView) convertView.findViewById(R.id.thread_SNo);
 
-                    Thread thread = threadList.get(position);
+            ThreadActivity.CourseThread thread = threadList.get(position);
 
-                    threadTitle.setText(thread.Title);
-                    threadTitle.setTypeface(MainActivity.Garibaldi);
+            threadTitle.setText(thread.title);
+            threadTitle.setTypeface(MainActivity.Garibaldi);
 
-                    threadID.setText("2"); //TODO: Karan- link thread id here
-                    threadDescription.setText(thread.Description);
-                    threadCreatedAt.setText("0000-00-00"); //TODO: Karan- link created and updated times here
-                    threadLastUpdate.setText(thread.UpdatedAt);
+            threadID.setText(Integer.toString(position + 1));
+            threadDescription.setText(thread.description);
+            threadCreatedAt.setText(thread.createdAt);
+            threadLastUpdate.setText(thread.updatedAt);
 
-                    return convertView;
-                }
-            }
+            return convertView;
+        }
+    }
 }

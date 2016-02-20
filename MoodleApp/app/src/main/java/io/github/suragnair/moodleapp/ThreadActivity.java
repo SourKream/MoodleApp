@@ -115,6 +115,8 @@ public class ThreadActivity extends AppCompatActivity {
         String description;
         int userID;
         int ID;
+        String updatedAt;
+        String createdAt;
 
         User threadCreator;
 
@@ -126,6 +128,8 @@ public class ThreadActivity extends AppCompatActivity {
                 description = thread.getString("description");
                 userID = thread.getInt("user_id");
                 ID = thread.getInt("id");
+                updatedAt = thread.getString("updated_at");
+                createdAt = thread.getString("created_at");
                 comments = new ArrayList<>();
                 commentUsers = new ArrayList<>();
 
@@ -137,6 +141,22 @@ public class ThreadActivity extends AppCompatActivity {
                 for (int i=0; i<jsonCommentUsersArray.length(); i++)
                     commentUsers.add(new User(jsonCommentUsersArray.getString(i)));
 
+            } catch (JSONException e) {
+                Log.d("JSON Exception : ", e.getMessage());
+            }
+        }
+
+        public CourseThread (String jsonThread){
+            try {
+                JSONObject thread = new JSONObject(jsonThread);
+                title = thread.getString("title");
+                description = thread.getString("description");
+                userID = thread.getInt("user_id");
+                ID = thread.getInt("id");
+                updatedAt = thread.getString("updated_at");
+                createdAt = thread.getString("created_at");
+                comments = new ArrayList<>();
+                commentUsers = new ArrayList<>();
             } catch (JSONException e) {
                 Log.d("JSON Exception : ", e.getMessage());
             }
