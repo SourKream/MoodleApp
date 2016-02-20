@@ -3,6 +3,8 @@ package io.github.suragnair.moodleapp;
 import android.app.Activity;
 import android.app.Notification;
 import android.content.Context;
+import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
@@ -10,6 +12,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -40,7 +43,19 @@ public class NotificationsFragment extends Fragment {
 
         notificationsListView = (ListView) view.findViewById(R.id.NotificationsListView);
         notificationsListView.setAdapter(new CustomListAdapter(this.getActivity(), notifications));
-        // TODO Add OnItemClickListener to notificationsListView
+        notificationsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                view.setBackgroundColor(getResources().getColor(R.color.windowBackground));
+                notifications.get(position).Seen();
+
+                String description = notifications.get(position).description;
+                Log.d("ThreadID : ", description);
+                description = description.substring(description.indexOf("/threads/thread/") + 16,description.indexOf("'>thread"));
+                Integer ThreadID = Integer.parseInt(description);
+                goToThread(ThreadID);
+            }
+        });
         return view;
     }
 
@@ -59,6 +74,12 @@ public class NotificationsFragment extends Fragment {
                 }
             }
         });
+    }
+
+    private void goToThread (Integer ThreadID){
+        Intent intent = new Intent(this.getActivity(), ThreadActivity.class);
+        intent.putExtra("thread_id",ThreadID);
+        startActivity(intent);
     }
 
     public static class Notification{
@@ -80,6 +101,8 @@ public class NotificationsFragment extends Fragment {
                 Log.d("JSON Exception : ", e.getMessage());
             }
         }
+
+        public void Seen(){isSeen = 1;}
     }
 
     class CustomListAdapter extends BaseAdapter {
@@ -119,6 +142,8 @@ public class NotificationsFragment extends Fragment {
 
             Notification notification = notificationsList.get(position);
             notificationDescription.setText(notification.description);
+            if (notificationsList.get(position).isSeen == 0)
+                convertView.setBackgroundColor(getResources().getColor(R.color.highlightColor));
 
             return convertView;
         }

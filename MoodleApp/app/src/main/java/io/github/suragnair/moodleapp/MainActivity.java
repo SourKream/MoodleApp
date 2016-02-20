@@ -23,6 +23,7 @@ public class MainActivity extends AppCompatActivity {
     private int currentFragment = 0;
     public static Typeface Garibaldi;
     public static Typeface MyriadPro;
+    private boolean COURSES_FRAGMENT_FLAG = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -109,6 +110,7 @@ public class MainActivity extends AppCompatActivity {
     private void loginUser(){
         MyApplication myApplication = (MyApplication) getApplication();
         if (!myApplication.isUserLoggedIn()) {
+            COURSES_FRAGMENT_FLAG = true;
             Intent intent = new Intent(this, LoginActivity.class);
             startActivity(intent);
         }
@@ -117,8 +119,12 @@ public class MainActivity extends AppCompatActivity {
     public void onResume() {
         super.onResume();
 
+        if (COURSES_FRAGMENT_FLAG){
+            currentFragment = 0;
+            changeFragment(currentFragment);
+            COURSES_FRAGMENT_FLAG = false;
+        }
         loginUser();
-        changeFragment(0);
     }
 
 }
