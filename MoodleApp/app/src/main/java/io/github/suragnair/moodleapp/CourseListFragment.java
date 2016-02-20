@@ -31,36 +31,33 @@ public class CourseListFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_course_list, container, false);
 
-        populateCourseList();
+        // TODO Fragment populated from server every time
+        if (((MyApplication) getActivity().getApplication()).isUserLoggedIn())
+            populateCourseListFromServer();
 
         courseListView = (ListView) view.findViewById(R.id.courseList);
         courseListView.setAdapter(new CustomListAdapter(this.getActivity(), courseList));
         courseListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                String coursename = courseList.get(position).CourseCode;
                 Intent intent = new Intent(getActivity(), CourseActivity.class);
-                intent.putExtra("coursename",coursename);
+                intent.putExtra("coursename",courseList.get(position).CourseCode);
                 startActivity(intent);
             }
         });
-
         return view;
     }
 
-    public void populateCourseList(){
+    public void populateCourseListFromServer(){
         Networking.getData(2, new String[0], new Networking.VolleyCallback() {
             @Override
             public void onSuccess(String result) {
                 try {
                     JSONObject response = new JSONObject(result);
                     JSONArray jsonCourseList = new JSONArray(response.getString("courses"));
-                    for (int i=0; i<jsonCourseList.length(); i++){
-                        JSONObject course = jsonCourseList.getJSONObject(i);
-                        courseList.add(new Course(course.getString("code").toUpperCase(),course.getString("name")));
-                    }
-                    CustomListAdapter adapter = (CustomListAdapter) courseListView.getAdapter();
-                    adapter.notifyDataSetChanged();
+                    for (int i=0; i<jsonCourseList.length(); i++)
+                        courseList.add(new Course(jsonCourseList.getString(i)));
+                    ((CustomListAdapter) courseListView.getAdapter()).notifyDataSetChanged();
                 } catch (JSONException e){
                     Log.d("Json Exception", "Response from server wasn't JSON");
                 }
@@ -69,27 +66,21 @@ public class CourseListFragment extends Fragment {
     }
 
     public static class Course{
-        public String CourseCode;
-        public String CourseDescription;
-        String CourseName;
         int ID;
         int Credits;
+        String CourseCode;
+        String CourseName;
+        String CourseDescription;
         String LTP;
 
-        // TODO Correct this class
-        public Course (String code, String description){
-            CourseCode = code;
-            CourseDescription = description;
-        }
-
-        public Course (String code, String desc, String name, String ltp, int id, int credits){
+/*        public Course (String code, String desc, String name, String ltp, int id, int credits){
             CourseCode = code;
             CourseDescription = desc;
             CourseName = name;
             LTP = ltp;
             Credits = credits;
             ID = id;
-        }
+        } */
 
         public Course (String JsonString){
             try {
@@ -106,7 +97,7 @@ public class CourseListFragment extends Fragment {
         }
     }
 
-    public class CustomListAdapter extends BaseAdapter{
+    class CustomListAdapter extends BaseAdapter{
 
         private Activity activity;
         private LayoutInflater inflater;
@@ -149,5 +140,4 @@ public class CourseListFragment extends Fragment {
             return convertView;
         }
     }
-
 }

@@ -12,19 +12,22 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
+import android.support.v7.widget.Toolbar;
 
 public class MainActivity extends AppCompatActivity {
 
     private String[] NavigationMenuList = {"Courses","Grades","Notifications"};
     private DrawerLayout drawerLayout;
     private RelativeLayout drawerSliderLayout;
+    private int currentFragment = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        android.support.v7.widget.Toolbar toolbar = (android.support.v7.widget.Toolbar) findViewById(R.id.my_toolbar);
+        // Setting up Toolbar
+        Toolbar toolbar = (Toolbar) findViewById(R.id.my_toolbar);
         setSupportActionBar(toolbar);
         toolbar.setNavigationIcon(R.drawable.ic_menu_white_24dp);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -37,12 +40,18 @@ public class MainActivity extends AppCompatActivity {
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawerSliderLayout = (RelativeLayout) findViewById(R.id.left_drawer);
 
+        // Initialising Navigation List
         ListView drawerListView = (ListView) findViewById(R.id.left_drawer_list);
         drawerListView.setAdapter(new ArrayAdapter<>(this, R.layout.navigation_list_item, NavigationMenuList));
         drawerListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                changeFragment(position);
+                if (drawerLayout.isDrawerOpen(drawerSliderLayout))
+                    drawerLayout.closeDrawer(drawerSliderLayout);
+                if (currentFragment != position) {
+                    currentFragment = position;
+                    changeFragment(currentFragment);
+                }
             }
         });
     }
@@ -54,12 +63,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public boolean onOptionsItemSelected (MenuItem item){
-        if (item.getItemId()==R.id.notificationButton){
-            // TODO Check if not already notifications fragment
-            changeFragment(2);
+        if ((item.getItemId() == R.id.notificationButton)&&(currentFragment != 2)){
+            currentFragment = 2;
+            changeFragment(currentFragment);
             return true;
         }
-        else
             return super.onOptionsItemSelected(item);
     }
 
@@ -67,11 +75,12 @@ public class MainActivity extends AppCompatActivity {
         android.support.v4.app.Fragment fragment = null;
         switch (position) {
             case 0: fragment = new CourseListFragment();
-                break;
+                    break;
             case 1: fragment = new GradesFragment();
-                break;
+                    break;
             case 2: fragment = new NotificationsFragment();
-                break;
+                    break;
+            default: return;
         }
         android.support.v4.app.FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
