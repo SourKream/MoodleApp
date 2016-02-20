@@ -1,6 +1,7 @@
 package io.github.suragnair.moodleapp;
 
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -18,11 +19,17 @@ public class MainActivity extends AppCompatActivity {
     private String[] NavigationMenuList = {"Courses","Grades","Notifications"};
     private DrawerLayout drawerLayout;
     private RelativeLayout drawerSliderLayout;
+    public static Typeface Garibaldi;
+    public static Typeface MyriadPro;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        // fonts
+        Garibaldi = Typeface.createFromAsset(getAssets(), "fonts/Garibaldi.ttf");
+        MyriadPro = Typeface.createFromAsset(getAssets(), "fonts/MyriadPro.ttf");
 
         android.support.v7.widget.Toolbar toolbar = (android.support.v7.widget.Toolbar) findViewById(R.id.my_toolbar);
         setSupportActionBar(toolbar);

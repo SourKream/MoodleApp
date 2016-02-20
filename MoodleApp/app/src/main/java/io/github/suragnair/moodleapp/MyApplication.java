@@ -1,6 +1,7 @@
 package io.github.suragnair.moodleapp;
 
 import android.app.Application;
+import android.graphics.Typeface;
 
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
@@ -18,6 +19,7 @@ import java.net.CookieManager;
 public class MyApplication extends Application
 {
     public static RequestQueue mRequestQueue;
+
     private User MyUser = null;
 
     @Override
@@ -42,4 +44,6 @@ public class MyApplication extends Application
         return MyUser;
     }
     // Getter for RequestQueue or just make it public
+
+
 }

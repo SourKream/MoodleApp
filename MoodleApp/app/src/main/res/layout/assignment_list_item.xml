@@ -1,30 +1,103 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content" >
 
     <TextView
-        android:layout_width="327dp"
-        android:layout_height="wrap_content"
-        android:id="@+id/Name"
-        android:text="@string/StringStyle"
-        android:textSize="20sp"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentEnd="true" />
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/S.No."
-        android:text="S.No."
-        android:textSize="20dp"/>
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:textColor="#bdbdbd"
+        android:id="@+id/SNo"
+        android:text="#"
+        android:textSize="25dp"
+        android:paddingTop="3dp"
+        android:paddingLeft="5dp"
+        android:layout_weight="0.3"
+        android:gravity="center"/>
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/timeRemainig"
-        android:text="TIME REMAINING"
-        android:textSize="15dp"
-        android:layout_below="@+id/Name"
-        android:layout_alignParentStart="true" />
-</RelativeLayout>
+    <LinearLayout
+    android:orientation="vertical"
+    android:layout_width="0dp"
+    android:layout_height="match_parent"
+    android:layout_weight="4">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/Name"
+            android:text="@string/StringStyle"
+            android:textSize="20dp"
+            android:paddingTop="3dp"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp"
+            android:textColor="#000000" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:paddingLeft="5dp"
+                android:textColor="#7c7c82"
+                android:text="Deadline"
+                android:textSize="15dp"
+                android:layout_weight="0.9"/>
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:textColor="#7c7c82"
+                android:text=":"
+                android:textSize="15dp"
+                android:layout_weight="0.2"/>
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:id="@+id/timeRemaining"
+                android:paddingRight="5dp"
+                android:textColor="#7c7c82"
+                android:text="Deadline"
+                android:textSize="15dp"
+                android:layout_weight="3"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:paddingLeft="5dp"
+                android:textColor="#7c7c82"
+                android:text="Posted"
+                android:textSize="15dp"
+                android:layout_weight="0.9"/>
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:textColor="#7c7c82"
+                android:text=":"
+                android:textSize="15dp"
+                android:layout_weight="0.2"/>
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:id="@+id/datePosted"
+                android:paddingRight="5dp"
+                android:textColor="#7c7c82"
+                android:text="DATE POSTED"
+                android:textSize="15dp"
+                android:layout_weight="3"
+                android:paddingBottom="3dp"/>
+
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>

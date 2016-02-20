@@ -121,14 +121,24 @@ public class AssignmentFragment extends Fragment{
             if (convertView == null)
                 convertView = inflater.inflate(R.layout.assignment_list_item, null);
 
-            TextView assgnName = (TextView) convertView.findViewById(R.id.Name);
-            TextView assgnSNo = (TextView) convertView.findViewById(R.id.S_No_);
-            TextView assgnTime = (TextView) convertView.findViewById(R.id.timeRemainig);
+            TextView assgnName     = (TextView) convertView.findViewById(R.id.Name);
+            TextView assgnDeadline = (TextView) convertView.findViewById(R.id.timeRemaining);
+            TextView assgnCreated  = (TextView) convertView.findViewById(R.id.datePosted);
+            TextView assgnSNo      = (TextView) convertView.findViewById(R.id.SNo);
 
             Assignment assignment = assignmentsList.get(position);
+
             assgnName.setText(assignment.Name);
+            assgnName.setTypeface(MainActivity.Garibaldi);
+
             assgnSNo.setText(assignment.SerialNo);
-            assgnTime.setText(assignment.TimeRemaining);
+            //assgnSNo.setTypeface(MainActivity.Garibaldi);
+
+            assgnDeadline.setText(assignment.TimeRemaining);
+            //assgnDeadline.setTypeface(MainActivity.MyriadPro);
+
+            assgnCreated.setText("0000-00-00"); //TODO: pls link time of creation karan
+            //assgnCreated.setTypeface(MainActivity.MyriadPro);
 
             return convertView;
         }
