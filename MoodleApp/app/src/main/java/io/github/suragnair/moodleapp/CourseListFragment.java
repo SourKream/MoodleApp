@@ -143,7 +143,7 @@ public class CourseListFragment extends Fragment {
 
             courseCode.setText(course.CourseCode.toUpperCase());
             courseCode.setTypeface(MainActivity.MyriadPro);
-            
+
             courseName.setText(course.CourseName);
             courseName.setTypeface(MainActivity.Garibaldi);
 

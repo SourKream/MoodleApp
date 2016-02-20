@@ -10,6 +10,16 @@
     android:orientation="vertical"
     tools:context="io.github.suragnair.moodleapp.NewThreadActivity">
 
+    <TextView
+        android:id="@+id/newThreadHeader"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="New Thread"
+        android:textSize="30dp"
+        android:textColor="#000000"
+        android:gravity="center"
+        android:singleLine="true" />
+
     <EditText
         android:id="@+id/newThreadTitle"
         android:layout_width="match_parent"
