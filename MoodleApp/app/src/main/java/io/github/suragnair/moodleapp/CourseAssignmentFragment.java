@@ -46,7 +46,6 @@ public class CourseAssignmentFragment extends Fragment{
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_course_assignment, container, false);
 
-
         AssgnListView = (ListView) view.findViewById(R.id.AssignmentList);
         AssgnListView.setAdapter(new CustomListAdapter(this.getActivity(), assignmentList));
         AssgnListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {

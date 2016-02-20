@@ -10,6 +10,7 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -25,18 +26,44 @@ public class CourseActivity extends AppCompatActivity {
         setContentView(R.layout.activity_course);
 
         CourseTitle = getIntent().getStringExtra("coursename");
-        setTitle(CourseTitle.toUpperCase());
+        setTitle(CourseTitle.toUpperCase() + " : Assignments");
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
         ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
         setupViewPager(viewPager);
+        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {}
+
+            @Override
+            public void onPageSelected(int position) {
+                String title = CourseTitle.toUpperCase() + " : ";
+                switch (position){
+                    case 0: title = title + "Assignments";
+                            break;
+                    case 1: title = title + "Threads";
+                            break;
+                    case 2: title = title + "Grades";
+                            break;
+                }
+                setTitle(title);
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {}
+        });
 
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(viewPager);
+        try {
+            tabLayout.getTabAt(0).setIcon(R.drawable.ic_insert_drive_file_white_24dp);
+            tabLayout.getTabAt(1).setIcon(R.drawable.ic_forum_white_24dp);
+            tabLayout.getTabAt(2).setIcon(R.drawable.ic_spellcheck_white_24dp);
+        } catch (java.lang.NullPointerException e) {
+            Log.d("Null Pointer: ",e.getMessage());
+        }
     }
 
     private void setupViewPager(ViewPager viewPager) {
@@ -54,8 +81,8 @@ public class CourseActivity extends AppCompatActivity {
         grade_fragment.setArguments(bundle);
 
         adapter.addFragment(assignment_fragment, "ASSIGNMENTS");
-        adapter.addFragment(thread_fragment,     "  THREADS  ");
-        adapter.addFragment(grade_fragment,      "  GRADES  ");
+        adapter.addFragment(thread_fragment,     "THREADS");
+        adapter.addFragment(grade_fragment,      "GRADES");
 
         viewPager.setAdapter(adapter);
     }
@@ -85,7 +112,7 @@ public class CourseActivity extends AppCompatActivity {
 
         @Override
         public CharSequence getPageTitle(int position) {
-            return mFragmentTitleList.get(position);
+            return null; //mFragmentTitleList.get(position);
         }
     }
 }
