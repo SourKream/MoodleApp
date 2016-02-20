@@ -144,7 +144,7 @@ public class CourseListFragment extends Fragment {
             courseCode.setText(course.CourseCode.toUpperCase());
             courseCode.setTypeface(MainActivity.MyriadPro);
 
-            courseDescription.setText(course.CourseName);
+            courseDescription.setText(course.CourseDescription);
             courseDescription.setTypeface(MainActivity.Garibaldi);
 
             LTP.setText("(" + course.LTP + ")");
