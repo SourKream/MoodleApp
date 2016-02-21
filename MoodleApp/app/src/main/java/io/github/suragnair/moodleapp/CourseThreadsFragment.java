@@ -59,6 +59,9 @@ public class CourseThreadsFragment extends Fragment{
                 newThreadClicked(v);
             }
         });
+
+        if (threadList.isEmpty()) view.findViewById(R.id.emptyCourseThread).setVisibility(View.VISIBLE);
+
         return view;
     }
 
@@ -76,10 +79,18 @@ public class CourseThreadsFragment extends Fragment{
                 try {
                     JSONObject response = new JSONObject(result);
                     JSONArray jsonThreadList = new JSONArray(response.getString("course_threads"));
-                    for (int i = 0; i < jsonThreadList.length(); i++)
-                        threadList.add(new ThreadActivity.CourseThread (jsonThreadList.getString(i)));
-                    CustomListAdapter adapter = (CustomListAdapter) threadListView.getAdapter();
-                    adapter.notifyDataSetChanged();
+
+                    if (jsonThreadList.length()==0)
+                        getActivity().findViewById(R.id.emptyCourseThread).setVisibility(View.VISIBLE);
+
+                    else {
+                        for (int i = 0; i < jsonThreadList.length(); i++)
+                            threadList.add(new ThreadActivity.CourseThread(jsonThreadList.getString(i)));
+                        CustomListAdapter adapter = (CustomListAdapter) threadListView.getAdapter();
+                        adapter.notifyDataSetChanged();
+                        getActivity().findViewById(R.id.emptyCourseThread).setVisibility(View.GONE);
+                    }
+
                 } catch (JSONException e) {
                     Log.d("JSON Exception : ", e.getMessage());
                 }

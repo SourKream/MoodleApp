@@ -37,6 +37,7 @@ public class CourseAssignmentFragment extends Fragment{
 
         Bundle bundle = this.getArguments();
         CourseName = bundle.getString("coursename");
+
         addAssignments();
     }
 
@@ -53,10 +54,12 @@ public class CourseAssignmentFragment extends Fragment{
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent intent = new Intent(getActivity(), AssignmentActivity.class);
                 intent.putExtra("coursename", CourseName);
-                intent.putExtra("assignment_id",assignmentList.get(position).ID);
+                intent.putExtra("assignment_id", assignmentList.get(position).ID);
                 startActivity(intent);
             }
         });
+
+        if (assignmentList.isEmpty()) view.findViewById(R.id.emptyCourseAssignment).setVisibility(View.VISIBLE);
 
         return view;
     }
@@ -69,9 +72,18 @@ public class CourseAssignmentFragment extends Fragment{
                 try {
                     JSONObject response = new JSONObject(result);
                     JSONArray jsonAssignmentList = new JSONArray(response.getString("assignments"));
-                    for (int i = 0; i < jsonAssignmentList.length(); i++)
-                        assignmentList.add(new Assignment(jsonAssignmentList.getString(i)));
-                    ((CustomListAdapter) AssgnListView.getAdapter()).notifyDataSetChanged();
+
+                    if (jsonAssignmentList.length()==0) {
+                        getActivity().findViewById(R.id.emptyCourseAssignment).setVisibility(View.VISIBLE);
+                    }
+
+                    else {
+                        for (int i = 0; i < jsonAssignmentList.length(); i++)
+                            assignmentList.add(new Assignment(jsonAssignmentList.getString(i)));
+                        ((CustomListAdapter) AssgnListView.getAdapter()).notifyDataSetChanged();
+                        getActivity().findViewById(R.id.emptyCourseAssignment).setVisibility(View.GONE);
+                    }
+
                 } catch (JSONException e){
                     Log.d("Json Exception", "Response from server wasn't JSON");
                 }

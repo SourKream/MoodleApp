@@ -47,6 +47,9 @@ public class CourseGradesFragment extends Fragment{
         View view = inflater.inflate(R.layout.fragment_course_grade, container, false);
         GradeListView = (ListView) view.findViewById(R.id.GradesList);
         GradeListView.setAdapter(new CustomListAdapter(this.getActivity(), gradeList));
+
+        if (gradeList.isEmpty()) view.findViewById(R.id.emptyCourseGrade).setVisibility(View.VISIBLE);
+
         return view;
     }
     public void populateGradeList()
@@ -58,6 +61,10 @@ public class CourseGradesFragment extends Fragment{
                     JSONObject response = new JSONObject(result);
                     JSONArray jsonGradeList = new JSONArray(response.getString("grades"));
 
+                    if (jsonGradeList.length()==0)
+                        getActivity().findViewById(R.id.emptyCourseGrade).setVisibility(View.VISIBLE);
+
+                    else {
                         for (int i = 0; i < jsonGradeList.length(); i++) {
                             JSONObject grade = jsonGradeList.getJSONObject(i);
                             gradeList.add(new Grade(String.valueOf(i + 1), grade.getString("name"),
@@ -65,8 +72,11 @@ public class CourseGradesFragment extends Fragment{
                                     grade.getString("weightage")));
                         }
 
-                    CustomListAdapter adapter = (CustomListAdapter) GradeListView.getAdapter();
-                    adapter.notifyDataSetChanged();
+                        CustomListAdapter adapter = (CustomListAdapter) GradeListView.getAdapter();
+                        adapter.notifyDataSetChanged();
+                        getActivity().findViewById(R.id.emptyCourseGrade).setVisibility(View.GONE);
+                    }
+
                 } catch (JSONException e) {
                     Log.d("Json Exception", "Response from server wasn't JSON");
                 }

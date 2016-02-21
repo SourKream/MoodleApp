@@ -24,6 +24,8 @@ import org.w3c.dom.Text;
 import java.util.ArrayList;
 import java.util.List;
 
+//TODO: something's off in the SNo display
+
 public class ThreadActivity extends AppCompatActivity {
 
     private CourseThread courseThread = null;
