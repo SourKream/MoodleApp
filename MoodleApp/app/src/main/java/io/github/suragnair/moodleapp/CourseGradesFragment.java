@@ -94,7 +94,7 @@ public class CourseGradesFragment extends Fragment{
                     CustomListAdapter adapter = (CustomListAdapter) GradeListView.getAdapter();
                     adapter.notifyDataSetChanged();
                     getActivity().findViewById(R.id.emptyCourseGrade).setVisibility(View.GONE);
-                }
+                
                 } catch (JSONException e) {
                     Log.d("Json Exception", "Response from server wasn't JSON");
                 }
