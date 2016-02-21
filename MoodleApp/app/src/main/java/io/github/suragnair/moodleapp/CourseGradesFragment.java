@@ -26,9 +26,12 @@ public class CourseGradesFragment extends Fragment{
     private List<Grade> gradeList = new ArrayList<Grade>();
     private ListView GradeListView = null;
     public String CourseName;
+    private float weightTotal;
+    private float marksTotal;
 
     public CourseGradesFragment() {
-        // Required empty public constructor
+        weightTotal = 0;
+        marksTotal = 0;
     }
 
     @Override
@@ -60,10 +63,21 @@ public class CourseGradesFragment extends Fragment{
 
                         for (int i = 0; i < jsonGradeList.length(); i++) {
                             JSONObject grade = jsonGradeList.getJSONObject(i);
-                            gradeList.add(new Grade(String.valueOf(i + 1), grade.getString("name"),
+                            Grade gradeElem = new Grade(String.valueOf(i + 1), grade.getString("name"),
                                     grade.getString("score"), grade.getString("out_of"),
-                                    grade.getString("weightage")));
+                                    grade.getString("weightage"));
+
+                            //Addiing Grade Element
+                            gradeList.add(gradeElem);
+
+                            //Updating Total
+                            weightTotal+= Float.valueOf(gradeElem.Weight);
+                            marksTotal+= Float.valueOf(gradeElem.Score);
                         }
+
+                    //Adding Total List Item
+                    Grade gradesTotal = new Grade("", "Total", String.valueOf(marksTotal), "-", String.valueOf(weightTotal));
+                    gradeList.add(gradesTotal);
 
                     CustomListAdapter adapter = (CustomListAdapter) GradeListView.getAdapter();
                     adapter.notifyDataSetChanged();
@@ -132,23 +146,34 @@ public class CourseGradesFragment extends Fragment{
             TextView absoluteMarks = (TextView) convertView.findViewById(R.id.courseGradeMarks);
             Grade grade = gradesList.get(position);
 
-            String scoreText = grade.Score + "/" + grade.OutOf;
-            int sc = Integer.valueOf(grade.Score);
-            int of = Integer.valueOf(grade.OutOf);
-            int wt = Integer.valueOf(grade.Weight);
-            int mks = (int) (((double)sc/(double)of)*(double)wt);
-            String Marks = String.valueOf(mks);
+            if(getCount()!=(position+1)){
+                String scoreText = grade.Score + "/" + grade.OutOf;
+                int sc = Integer.valueOf(grade.Score);
+                int of = Integer.valueOf(grade.OutOf);
+                int wt = Integer.valueOf(grade.Weight);
+                int mks = (int) (((double) sc / (double) of) * (double) wt);
+                String Marks = String.valueOf(mks);
 
-            ItemName.setText(grade.ItemName);
-            ItemName.setTypeface(MainActivity.Garibaldi);
+                ItemName.setText(grade.ItemName);
+                ItemName.setTypeface(MainActivity.Garibaldi);
 
-            SNo.setText(grade.SerialNo);
-            score.setText(scoreText);
-            weight.setText(grade.Weight);
-            absoluteMarks.setText(Marks);
+                SNo.setText(grade.SerialNo);
+                score.setText(scoreText);
+                weight.setText(grade.Weight);
+                absoluteMarks.setText(Marks);
+            }
+            else
+            {
+                ItemName.setText(grade.ItemName);
+                ItemName.setTypeface(MainActivity.Garibaldi);
 
-            //TODO: Karan add an object in the end for title
-            //      keep its SNo blank (""), Name me 'Total', Score me '-', weight me sum of weights, marks me total marks
+                SNo.setText(grade.SerialNo);
+                score.setText("-");
+                weight.setText(grade.Weight);
+                absoluteMarks.setText(grade.Score);
+
+            }
+
             return convertView;
         }
     }
