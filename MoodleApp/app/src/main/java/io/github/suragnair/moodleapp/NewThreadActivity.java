@@ -32,6 +32,9 @@ public class NewThreadActivity extends AppCompatActivity {
         String threadDescription = description.getText().toString();
         String courseCode = getIntent().getStringExtra("courseCode");
 
+        if (threadTitle.isEmpty()) {title.setHint("Title (Required)"); return;}
+        if (threadDescription.isEmpty()) {description.setHint("Description (Required)"); return;}
+
         Networking.getData(10, new String[]{threadTitle.replace(" ", "%20"), threadDescription.replace(" ", "%20"), courseCode.toLowerCase()}, new Networking.VolleyCallback() {
             @Override
             public void onSuccess(String result) {

@@ -19,22 +19,12 @@
         android:layout_gravity="center_horizontal"
         android:layout_alignParentTop="true"/>
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/threadDescription"
-        android:textColor="#000000"
-        android:text="DATE POSTED"
-        android:textSize="17dp"
-        android:paddingBottom="3dp"
-        android:layout_below="@+id/threadTitle"/>
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:id="@+id/usernameDetails"
-        android:layout_below="@+id/threadDescription">
+        android:layout_below="@+id/threadTitle">
         <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -64,27 +54,28 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingBottom="5dp"
-        android:paddingTop="10dp"
-        android:id="@+id/greyBarTop"
+        android:paddingTop="2dp"
+        android:id="@+id/blueBarTop"
         android:layout_below="@+id/usernameDetails">
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="#e0e0e0"/>
+            android:background="@color/colorPrimary"/>
     </LinearLayout>
 
     <ListView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/commentsListView"
-        android:layout_below="@id/greyBarTop"
+        android:layout_below="@id/blueBarTop"
         android:layout_above="@+id/greyBarBottom"
-        android:clickable="false" />
+        android:clickable="false"/>
+
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingBottom="5dp"
+        android:paddingBottom="10dp"
         android:paddingTop="10dp"
         android:id="@+id/greyBarBottom"
         android:layout_above="@+id/commentInput">
@@ -102,23 +93,30 @@
         android:layout_alignParentBottom="true">
 
         <EditText
+            android:background="@drawable/textbox_outline"
+            android:padding="5dp"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:id="@+id/newComment"
             android:minLines="2"
-            android:maxLines="2"
+            android:maxLines="3"
             android:inputType="textShortMessage|textAutoCorrect|textCapSentences|textMultiLine"
             android:hint="New Comment"
             android:scrollbars="vertical"
             android:editable="true"
             android:singleLine="true"
-            android:layout_weight="3"/>
+            android:layout_gravity="center_vertical"
+            android:layout_weight="3"
+            android:gravity="top"
+            android:layout_marginRight="5dp"/>
 
         <Button
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="-2.5dp"
             android:text="POST"
             android:gravity="center"
+            android:layout_gravity="bottom"
             android:id="@+id/postButton"
             android:onClick="postComment"
             android:layout_weight="1"/>

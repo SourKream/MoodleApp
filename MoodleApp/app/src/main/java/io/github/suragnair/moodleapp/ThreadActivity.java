@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.EditText;
+import android.widget.HeaderViewListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -18,6 +19,7 @@ import com.android.volley.Network;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,16 +30,16 @@ public class ThreadActivity extends AppCompatActivity {
     private ListView commentsListView = null;
     private TextView threadTitle;
     private TextView threadCreatorName;
-    private TextView threadDescription;
+    private boolean firstTime;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_thread);
 
+        firstTime = true;
         threadTitle = (TextView) findViewById(R.id.threadTitle);
         threadCreatorName = (TextView) findViewById(R.id.threadUserName);
-        threadDescription = (TextView) findViewById(R.id.threadDescription);
 
         int threadID = getIntent().getIntExtra("thread_id",0);
         loadThreadData(threadID);
@@ -70,11 +72,10 @@ public class ThreadActivity extends AppCompatActivity {
                         }
                     });
 
-                    initialiseListView();
+                    initialiseListView(courseThread.description);
 
                     threadTitle.setText(courseThread.title);
                     threadTitle.setTypeface(MainActivity.Garibaldi);
-                    threadDescription.setText(courseThread.description);
                     updateComments();
                 } catch (JSONException e) {
                     Log.d("JSON Exception : ", e.getMessage());
@@ -83,13 +84,15 @@ public class ThreadActivity extends AppCompatActivity {
         });
     }
 
-    private void initialiseListView(){
+    private void initialiseListView(String threadDescription){
         commentsListView = (ListView) findViewById(R.id.commentsListView);
-        commentsListView.setAdapter(new CustomCommentListAdapter(this, courseThread.comments, courseThread.commentUsers));
+        commentsListView.setAdapter(new CustomCommentListAdapter(this, courseThread.comments, courseThread.commentUsers, threadDescription));
     }
 
     private void updateComments(){
         CustomCommentListAdapter adapter = (CustomCommentListAdapter) commentsListView.getAdapter();
+        if (!firstTime) commentsListView.setSelection(commentsListView.getAdapter().getCount()-1);
+        if(firstTime) firstTime = false;
         adapter.notifyDataSetChanged();
     }
 
@@ -97,6 +100,9 @@ public class ThreadActivity extends AppCompatActivity {
         final EditText commentEditText = (EditText) findViewById(R.id.newComment);
         String comment = commentEditText.getText().toString();
         comment = comment.replace(" ","%20");
+
+        if (comment.isEmpty()) return;
+
         Networking.getData(11, new String[]{Integer.toString(courseThread.ID), comment}, new Networking.VolleyCallback() {
             @Override
             public void onSuccess(String result) {
@@ -136,10 +142,10 @@ public class ThreadActivity extends AppCompatActivity {
 
                 course = new CourseListFragment.Course(jsonCourse);
                 JSONArray jsonCommentsArray = new JSONArray(jsonComments);
-                for (int i=0; i<jsonCommentsArray.length(); i++)
+                for (int i=jsonCommentsArray.length()-1; i>=0; i--)
                     comments.add(new Comment(jsonCommentsArray.getString(i)));
                 JSONArray jsonCommentUsersArray = new JSONArray(jsonCommentUsers);
-                for (int i=0; i<jsonCommentUsersArray.length(); i++)
+                for (int i=jsonCommentsArray.length()-1; i>=0; i--)
                     commentUsers.add(new User(jsonCommentUsersArray.getString(i)));
 
             } catch (JSONException e) {
@@ -201,23 +207,26 @@ public class ThreadActivity extends AppCompatActivity {
 
         private Activity activity;
         private LayoutInflater inflater;
+        private String threadDescription;
         private List<Comment> commentList;
         private List<User> commentUserList;
 
-        public CustomCommentListAdapter(Activity activity, List<Comment> comment_List, List<User> comment_user_list){
+        public CustomCommentListAdapter(Activity activity, List<Comment> comment_List, List<User> comment_user_list, String thread_description){
             this.activity = activity;
             this.commentList = comment_List;
             this.commentUserList = comment_user_list;
+            this.threadDescription = thread_description;
         }
 
         @Override
         public int getCount() {
-            return commentList.size();
+            return commentList.size()+1;
         }
 
         @Override
         public Object getItem(int position) {
-            return commentList.get(position);
+            if (position==0) return threadDescription;
+            else return commentList.get(position-1);
         }
 
         @Override
@@ -229,18 +238,25 @@ public class ThreadActivity extends AppCompatActivity {
         public View getView(int position, View convertView, ViewGroup parent) {
             if (inflater == null)
                 inflater = (LayoutInflater) activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            if (convertView == null)
-                convertView = inflater.inflate(R.layout.thread_comment_list_item, null);
+           // if (convertView == null) {
 
-            TextView commentUsername = (TextView) convertView.findViewById(R.id.commentUsername);
-            TextView commentDescription = (TextView) convertView.findViewById(R.id.comment);
+                if (position == 0) {
+                    convertView = inflater.inflate(R.layout.thread_comment_list_header, null);
+                    TextView threadViewDescription = (TextView) convertView.findViewById(R.id.threadHeaderDescription);
+                    threadViewDescription.setText(threadDescription);
+                }
+                else {
+                    convertView = inflater.inflate(R.layout.thread_comment_list_item, null);
+                    TextView commentUsername = (TextView) convertView.findViewById(R.id.commentUsername);
+                    TextView commentDescription = (TextView) convertView.findViewById(R.id.comment);
 
-            Comment comment = commentList.get(commentList.size() - position - 1);
-            User user = commentUserList.get(commentUserList.size() - position - 1);
-            commentDescription.setText(comment.Description);
-            commentUsername.setText(user.firstName + " " + user.lastName);
-            commentUsername.setTypeface(MainActivity.MyriadPro);
+                    Comment comment = commentList.get(commentList.size() - position );
+                    User user = commentUserList.get(commentUserList.size() - position );
+                    commentDescription.setText(comment.Description);
+                    commentUsername.setText(user.firstName + " " + user.lastName);
 
+                }
+            //}
             return convertView;
         }
     }

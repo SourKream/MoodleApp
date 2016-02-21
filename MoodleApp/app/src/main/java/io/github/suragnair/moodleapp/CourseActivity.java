@@ -16,6 +16,8 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
+//TODO: highlight active fragment ka image
+
 public class CourseActivity extends AppCompatActivity {
 
     public String CourseTitle;

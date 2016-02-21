@@ -11,10 +11,9 @@
         android:layout_height="match_parent"
         android:textColor="#bdbdbd"
         android:id="@+id/SNo"
-        android:text="#"
-        android:textSize="25dp"
+        android:text="1"
+        android:textSize="19dp"
         android:paddingTop="3dp"
-        android:paddingLeft="5dp"
         android:layout_weight="0.3"
         android:gravity="center"/>
 
@@ -31,7 +30,6 @@
             android:text="@string/StringStyle"
             android:textSize="20dp"
             android:paddingTop="3dp"
-            android:paddingLeft="5dp"
             android:paddingRight="5dp"
             android:textColor="#000000" />
 
@@ -42,7 +40,6 @@
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:paddingLeft="5dp"
                 android:textColor="#7c7c82"
                 android:text="Deadline"
                 android:textSize="15dp"
@@ -75,7 +72,6 @@
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:paddingLeft="5dp"
                 android:textColor="#7c7c82"
                 android:text="Posted"
                 android:textSize="15dp"
