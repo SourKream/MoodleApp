@@ -47,7 +47,7 @@ public class NotificationsFragment extends Fragment {
         notificationsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                view.setBackgroundColor(getResources().getColor(R.color.windowBackground));
+                view.setBackgroundColor(getResources().getColor(R.color.backgroundCustom));
                 notifications.get(position).Seen();
 
                 String description = notifications.get(position).description;
@@ -144,8 +144,7 @@ public class NotificationsFragment extends Fragment {
             Notification notification = notificationsList.get(position);
 
             //TODO: get the title of the corresponding Post
-            //notificationDescription.setText(Html.fromHtml(notification.description).toString());
-            notificationDescription.setText(notification.description);
+            notificationDescription.setText(Html.fromHtml(notification.description).toString());
             if (notificationsList.get(position).isSeen == 0)
                 convertView.setBackgroundColor(getResources().getColor(R.color.highlightColor));
 
