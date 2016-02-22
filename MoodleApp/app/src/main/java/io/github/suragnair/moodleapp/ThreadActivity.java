@@ -24,8 +24,6 @@ import org.w3c.dom.Text;
 import java.util.ArrayList;
 import java.util.List;
 
-//TODO: something's off in the SNo display
-
 public class ThreadActivity extends AppCompatActivity {
 
     private CourseThread courseThread = null;
@@ -96,6 +94,26 @@ public class ThreadActivity extends AppCompatActivity {
         if (!firstTime) commentsListView.setSelection(commentsListView.getAdapter().getCount()-1);
         if(firstTime) firstTime = false;
         adapter.notifyDataSetChanged();
+    }
+
+    private void reloadCommentsFromServer(){
+        Networking.getData(9, new String[]{Integer.toString(courseThread.ID)}, new Networking.VolleyCallback() {
+            @Override
+            public void onSuccess(String result) {
+                try {
+
+                    JSONObject response = new JSONObject(result);
+                    String jsonComments = response.getString("comments");
+                    String jsonCommentUsers = response.getString("comment_users");
+                    courseThread.updateComments(jsonComments, jsonCommentUsers);
+
+                    ((CustomCommentListAdapter) commentsListView.getAdapter()).notifyDataSetChanged();
+
+                } catch (JSONException e) {
+                    Log.d("JSON Exception : ", e.getMessage());
+                }
+            }
+        });
     }
 
     public void postComment (View view){
@@ -173,6 +191,21 @@ public class ThreadActivity extends AppCompatActivity {
 
         public void setThreadCreator (String jsonString){
             threadCreator = new User(jsonString);
+        }
+
+        public void updateComments (String jsonComments, String jsonCommentUsers){
+            comments.clear();
+            commentUsers.clear();
+            try {
+                JSONArray jsonCommentsArray = new JSONArray(jsonComments);
+                for (int i=jsonCommentsArray.length()-1; i>=0; i--)
+                    comments.add(new Comment(jsonCommentsArray.getString(i)));
+                JSONArray jsonCommentUsersArray = new JSONArray(jsonCommentUsers);
+                for (int i=jsonCommentsArray.length()-1; i>=0; i--)
+                    commentUsers.add(new User(jsonCommentUsersArray.getString(i)));
+            } catch (JSONException e) {
+                Log.d("JSON Exception : ", e.getMessage());
+            }
         }
     }
 

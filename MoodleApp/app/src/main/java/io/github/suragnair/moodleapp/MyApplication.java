@@ -8,6 +8,8 @@ import com.android.volley.toolbox.Volley;
 
 import java.net.CookieHandler;
 import java.net.CookieManager;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by snair on 16/02/16.
@@ -21,6 +23,7 @@ public class MyApplication extends Application
     public static RequestQueue mRequestQueue;
 
     private User MyUser = null;
+    public List<CourseListFragment.Course> MyCourses = new ArrayList<>();
 
     @Override
     public void onCreate() {
@@ -40,9 +43,6 @@ public class MyApplication extends Application
         MyUser = user;
     }
 
-    public User getMyUser(){
-        return MyUser;
-    }
     // Getter for RequestQueue or just make it public
 
 
