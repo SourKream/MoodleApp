@@ -40,7 +40,9 @@ public class NewThreadActivity extends AppCompatActivity {
                 try {
                     JSONObject response = new JSONObject(result);
                     if (response.getString("success").equals("true")) {
+                        CourseActivity.newThreadPosted = true;
                         startThreadActivity(response.getInt("thread_id"));
+
                     }
                 } catch (JSONException e) {
                     Log.d("JSON Exception", e.getMessage());

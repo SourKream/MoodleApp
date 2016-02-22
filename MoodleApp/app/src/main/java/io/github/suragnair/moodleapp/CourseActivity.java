@@ -21,6 +21,7 @@ import java.util.List;
 public class CourseActivity extends AppCompatActivity {
 
     public String CourseTitle;
+    public static boolean newThreadPosted = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

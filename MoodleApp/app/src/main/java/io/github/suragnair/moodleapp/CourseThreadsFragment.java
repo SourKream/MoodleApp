@@ -72,9 +72,22 @@ public class CourseThreadsFragment extends Fragment{
         return view;
     }
 
+    public void onResume() {
+        super.onResume();
+
+        if (CourseActivity.newThreadPosted){
+            // reload threads
+            threadList.clear();
+            addThreads();
+            sortThreads();
+            CourseActivity.newThreadPosted = false;
+        }
+    }
+
     public void newThreadClicked (View view){
         Intent intent = new Intent(getActivity(), NewThreadActivity.class);
         intent.putExtra("courseCode",CourseName);
+        intent.putExtra("activity","first");
         startActivity(intent);
     }
 
