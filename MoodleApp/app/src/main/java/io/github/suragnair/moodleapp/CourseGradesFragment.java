@@ -20,6 +20,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
+import io.github.suragnair.moodleapp.CourseListFragment.Course;
 
 public class CourseGradesFragment extends Fragment{
 
@@ -42,7 +43,7 @@ public class CourseGradesFragment extends Fragment{
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_course_grade, container, false);
         GradeListView = (ListView) view.findViewById(R.id.GradesList);
-        GradeListView.setAdapter(new CustomListAdapter(this.getActivity(), gradeList));
+        GradeListView.setAdapter(new CustomGradesListAdapter(this.getActivity(), gradeList));
 
         if (gradeList.isEmpty()) view.findViewById(R.id.emptyCourseGrade).setVisibility(View.VISIBLE);
 
@@ -71,7 +72,7 @@ public class CourseGradesFragment extends Fragment{
                         }
 
                         gradeList.add(new Grade(totalWeight, totalMarks)); // For Total
-                        CustomListAdapter adapter = (CustomListAdapter) GradeListView.getAdapter();
+                        CustomGradesListAdapter adapter = (CustomGradesListAdapter) GradeListView.getAdapter();
                         adapter.notifyDataSetChanged();
                         getActivity().findViewById(R.id.emptyCourseGrade).setVisibility(View.GONE);
                     }
@@ -83,7 +84,7 @@ public class CourseGradesFragment extends Fragment{
 
     }
 
-    public class Grade{
+    public static class Grade{
         Integer ID;
         String Name = "TOTAL";
         Integer OutOf = 0;
@@ -115,15 +116,26 @@ public class CourseGradesFragment extends Fragment{
         }
     }
 
-    public class CustomListAdapter extends BaseAdapter {
+    public static class CustomGradesListAdapter extends BaseAdapter {
 
         private Activity activity;
         private LayoutInflater inflater;
         private List<Grade> gradesList;
+        private List<Course> courseList;
+        boolean showTotal;
 
-        public CustomListAdapter(Activity activity, List<Grade> gradesList){
+        public CustomGradesListAdapter(Activity activity, List<Grade> gradesList){
             this.activity = activity;
             this.gradesList = gradesList;
+            this.courseList = null;
+            showTotal = true;
+        }
+
+        public CustomGradesListAdapter(Activity activity, List<Grade> gradesList, List<Course> courseList){
+            this.activity = activity;
+            this.gradesList = gradesList;
+            this.courseList = courseList;
+            showTotal = false;
         }
 
         @Override
@@ -148,6 +160,13 @@ public class CourseGradesFragment extends Fragment{
             if (convertView == null)
                 convertView = inflater.inflate(R.layout.grade_item_layout, null);
 
+            if (courseList == null)
+                convertView.findViewById(R.id.CourseLabel).setVisibility(View.GONE);
+            else {
+                convertView.findViewById(R.id.CourseLabel).setVisibility(View.VISIBLE);
+                ((TextView) convertView.findViewById(R.id.courseCodeLabel)).setText(courseList.get(position).CourseCode.toUpperCase());
+            }
+
             TextView Name = (TextView) convertView.findViewById(R.id.courseGradeTitle);
             TextView SerialNo = (TextView) convertView.findViewById(R.id.courseGradeSNo);
             TextView Score = (TextView) convertView.findViewById(R.id.courseGradeScore);
@@ -164,7 +183,7 @@ public class CourseGradesFragment extends Fragment{
             Score.setText(String.format("%d/%d", grade.Score, grade.OutOf));
             Weight.setText(String.format("%d", grade.Weightage));
             Marks.setText(String.format("%.1f", grade.Total));
-            if(position == (getCount() - 1)) {
+            if((position == (getCount() - 1))&&(showTotal)) {
                 convertView.findViewById(R.id.ScoreLabel).setVisibility(View.INVISIBLE);
                 SerialNo.setVisibility(View.INVISIBLE);
             }
