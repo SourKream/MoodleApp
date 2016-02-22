@@ -143,7 +143,6 @@ public class NotificationsFragment extends Fragment {
 
             Notification notification = notificationsList.get(position);
 
-            //TODO: get the title of the corresponding Post
             notificationDescription.setText(Html.fromHtml(notification.description).toString());
             if (notificationsList.get(position).isSeen == 0)
                 convertView.setBackgroundColor(getResources().getColor(R.color.highlightColor));

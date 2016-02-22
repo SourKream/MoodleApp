@@ -2,9 +2,12 @@ package io.github.suragnair.moodleapp;
 
 import android.content.Intent;
 import android.graphics.Typeface;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -64,6 +67,29 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    public void onResume() {
+        super.onResume();
+
+        if (COURSES_FRAGMENT_FLAG){
+            currentFragment = 0;
+            changeFragment(currentFragment);
+            COURSES_FRAGMENT_FLAG = false;
+        }
+        else
+            changeFragment(currentFragment);
+
+        loginUser();
+    }
+
+    private void loginUser(){
+        MyApplication myApplication = (MyApplication) getApplication();
+        if (!myApplication.isUserLoggedIn()) {
+            COURSES_FRAGMENT_FLAG = true;
+            Intent intent = new Intent(this, LoginActivity.class);
+            startActivity(intent);
+        }
+    }
+
     public boolean onCreateOptionsMenu (Menu menu){
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.activity_main_toolbar, menu);
@@ -80,7 +106,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void changeFragment (int position){
-        android.support.v4.app.Fragment fragment = null;
+        Fragment fragment;
         switch (position) {
             case 0: fragment = new CourseListFragment();
                     break;
@@ -90,10 +116,21 @@ public class MainActivity extends AppCompatActivity {
                     break;
             default: return;
         }
-        android.support.v4.app.FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
         if (drawerLayout.isDrawerOpen(drawerSliderLayout))
             drawerLayout.closeDrawer(drawerSliderLayout);
+    }
+
+    public boolean onKeyDown(int keycode, KeyEvent event){
+        if (keycode == KeyEvent.KEYCODE_BACK){
+            if (currentFragment == 2 || currentFragment == 1){
+                currentFragment = 0;
+                changeFragment(currentFragment);
+                return true;
+            }
+        }
+        return super.onKeyDown(keycode, event);
     }
 
     public void signOutClicked (View view){
@@ -106,25 +143,4 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
-
-    private void loginUser(){
-        MyApplication myApplication = (MyApplication) getApplication();
-        if (!myApplication.isUserLoggedIn()) {
-            COURSES_FRAGMENT_FLAG = true;
-            Intent intent = new Intent(this, LoginActivity.class);
-            startActivity(intent);
-        }
-    }
-
-    public void onResume() {
-        super.onResume();
-
-        if (COURSES_FRAGMENT_FLAG){
-            currentFragment = 0;
-            changeFragment(currentFragment);
-            COURSES_FRAGMENT_FLAG = false;
-        }
-        loginUser();
-    }
-
 }

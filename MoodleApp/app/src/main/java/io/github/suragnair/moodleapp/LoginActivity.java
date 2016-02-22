@@ -1,48 +1,14 @@
 package io.github.suragnair.moodleapp;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
-import android.annotation.TargetApi;
-import android.app.Activity;
-import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.content.res.Resources;
-import android.net.Network;
-import android.support.annotation.NonNull;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
-import android.app.LoaderManager.LoaderCallbacks;
-
-import android.content.CursorLoader;
-import android.content.Loader;
-import android.database.Cursor;
-import android.net.Uri;
-import android.os.AsyncTask;
-
-import android.os.Build;
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.View;
-import android.view.View.OnClickListener;
-import android.view.inputmethod.EditorInfo;
-import android.widget.ArrayAdapter;
-import android.widget.AutoCompleteTextView;
-import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ProgressBar;
-import android.widget.TextView;
 import android.widget.Toast;
-
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import static android.Manifest.permission.READ_CONTACTS;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -70,17 +36,17 @@ public class LoginActivity extends AppCompatActivity {
         View focusView = null;
         Boolean cancel = false;
 
-        // Check for a valid password, if the user entered one.
-        if (TextUtils.isEmpty(password) || !isPasswordValid(password)) {
-            passwordEditText.setError(getString(R.string.error_invalid_password));
-            focusView = passwordEditText;
+        // Check for a valid email address.
+        if (TextUtils.isEmpty(username)) {
+            usernameEditText.setHint("Username (Required)");
+            focusView = usernameEditText;
             cancel = true;
         }
 
-        // Check for a valid email address.
-        if (TextUtils.isEmpty(username)) {
-            usernameEditText.setError(getString(R.string.error_field_required));
-            focusView = usernameEditText;
+        // Check for a valid password, if the user entered one.
+        if (TextUtils.isEmpty(password)) {
+            passwordEditText.setHint("Password (Required)");
+            focusView = passwordEditText;
             cancel = true;
         }
 
@@ -89,11 +55,6 @@ public class LoginActivity extends AppCompatActivity {
         } else {
             attemptLogin(username, password);
         }
-    }
-
-    private boolean isPasswordValid(String password) {
-        //TODO: Replace this with your own logic
-        return true;//password.length() > 4;
     }
 
     private void attemptLogin (String username, String password){

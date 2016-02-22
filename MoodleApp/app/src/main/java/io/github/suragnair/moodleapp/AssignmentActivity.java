@@ -1,32 +1,13 @@
 package io.github.suragnair.moodleapp;
 
-import android.app.Activity;
-import android.content.Context;
 import android.os.Bundle;
-import android.support.design.widget.TabLayout;
-import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.text.Html;
 import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.TextView;
 
-import java.text.DateFormat;
-import java.util.Calendar;
-
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.sql.Time;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
 
 public class AssignmentActivity extends AppCompatActivity {
 
@@ -42,7 +23,7 @@ public class AssignmentActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_assignment);
 
-        String CourseTitle = getIntent().getStringExtra("coursename");
+//        String CourseTitle = getIntent().getStringExtra("coursename");
         Integer AssignmentID = getIntent().getIntExtra("assignment_id",0);
 
         assignTitle = (TextView) findViewById(R.id.assign_title);
@@ -60,7 +41,7 @@ public class AssignmentActivity extends AppCompatActivity {
 
         assignDescription.setText(Html.fromHtml(assignment.Description));
         assignDeadline.setText(assignment.Deadline);
-        assignLDA.setText(Integer.toString(assignment.LateDaysAllowed));
+        assignLDA.setText(String.format("%d",assignment.LateDaysAllowed));
         assignCreateDate.setText(assignment.CreatedAt);
     }
 
