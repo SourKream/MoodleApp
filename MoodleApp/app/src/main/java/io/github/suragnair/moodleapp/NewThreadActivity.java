@@ -12,7 +12,6 @@ import android.widget.Toast;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-//TODO: sk- am able to post a new thread without title
 public class NewThreadActivity extends AppCompatActivity {
 
     @Override

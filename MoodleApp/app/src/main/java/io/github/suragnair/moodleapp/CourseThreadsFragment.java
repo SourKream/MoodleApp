@@ -22,6 +22,12 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Collections;
+import java.util.Comparator;
+
 public class CourseThreadsFragment extends Fragment{
 
     private List<ThreadActivity.CourseThread> threadList = new ArrayList<ThreadActivity.CourseThread>();
@@ -35,6 +41,7 @@ public class CourseThreadsFragment extends Fragment{
         Bundle bundle = this.getArguments();
         CourseName = bundle.getString("coursename");
         addThreads();
+        sortThreads();
     }
 
     @Override
@@ -93,6 +100,23 @@ public class CourseThreadsFragment extends Fragment{
 
                 } catch (JSONException e) {
                     Log.d("JSON Exception : ", e.getMessage());
+                }
+            }
+        });
+    }
+
+    //Sorting threads on the basis of recently updated one
+
+    public void sortThreads()
+    {
+        Collections.sort(threadList, new Comparator<ThreadActivity.CourseThread>() {
+            DateFormat f = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            @Override
+            public int compare(ThreadActivity.CourseThread o1, ThreadActivity.CourseThread o2) {
+                try {
+                    return f.parse(o2.updatedAt).compareTo(f.parse(o1.updatedAt));
+                } catch (ParseException e) {
+                    throw new IllegalArgumentException(e);
                 }
             }
         });

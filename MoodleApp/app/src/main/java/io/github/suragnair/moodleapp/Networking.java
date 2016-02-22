@@ -9,7 +9,7 @@ import com.android.volley.VolleyError;
 
 public class Networking {
 
-    private final static String urlBase = "http://10.0.2.2:8000";
+    private final static String urlBase = "http://192.168.0.4:8000";
 
     private final static String extensions[][] = {                                     //   optional inputs
             new String[] {"/default/login.json?userid=","&password=",""},       //0
