@@ -26,13 +26,6 @@ public class CourseGradesFragment extends Fragment{
     private List<Grade> gradeList = new ArrayList<Grade>();
     private ListView GradeListView = null;
     public String CourseName;
-    private float weightTotal;
-    private float marksTotal;
-
-    public CourseGradesFragment() {
-        weightTotal = 0;
-        marksTotal = 0;
-    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -68,33 +61,20 @@ public class CourseGradesFragment extends Fragment{
                         getActivity().findViewById(R.id.emptyCourseGrade).setVisibility(View.VISIBLE);
 
                     else {
-                        for (int i = 0; i < jsonGradeList.length(); i++) {
-                            JSONObject grade = jsonGradeList.getJSONObject(i);
-                            Grade gradeElem = new Grade(String.valueOf(i + 1), grade.getString("name"),
-                                    grade.getString("score"), grade.getString("out_of"),
-                                    grade.getString("weightage"));
-
-                            //Addiing Grade Element
-                            gradeList.add(gradeElem);
-
-                            //Updating Total
-                            weightTotal+= Float.valueOf(gradeElem.Weight);
-                            marksTotal+= Float.valueOf(gradeElem.Score);
+                        Integer totalWeight = 0;
+                        Double totalMarks = 0.0;
+                        for (int i = 0; i < jsonGradeList.length(); i++){
+                            Grade grade = new Grade(jsonGradeList.getString(i));
+                            gradeList.add(grade);
+                            totalWeight = totalWeight + grade.Weightage;
+                            totalMarks = totalMarks + ((((double) grade.Score)/grade.OutOf) * grade.Weightage);
                         }
 
+                        gradeList.add(new Grade(totalWeight, totalMarks)); // For Total
                         CustomListAdapter adapter = (CustomListAdapter) GradeListView.getAdapter();
                         adapter.notifyDataSetChanged();
                         getActivity().findViewById(R.id.emptyCourseGrade).setVisibility(View.GONE);
                     }
-
-                    //Adding Total List Item
-                    Grade gradesTotal = new Grade("", "Total", String.valueOf(marksTotal), "-", String.valueOf(weightTotal));
-                    gradeList.add(gradesTotal);
-
-                    CustomListAdapter adapter = (CustomListAdapter) GradeListView.getAdapter();
-                    adapter.notifyDataSetChanged();
-                    getActivity().findViewById(R.id.emptyCourseGrade).setVisibility(View.GONE);
-                
                 } catch (JSONException e) {
                     Log.d("Json Exception", "Response from server wasn't JSON");
                 }
@@ -104,19 +84,34 @@ public class CourseGradesFragment extends Fragment{
     }
 
     public class Grade{
-        public String SerialNo;
-        public String ItemName;
-        public String Score;
-        public String OutOf;
-        public String Weight;
+        Integer ID;
+        String Name = "TOTAL";
+        Integer OutOf = 0;
+        Integer CourseID;
+        Integer Score = 0;
+        Integer UserID;
+        Integer Weightage;
+        Double Total;
 
-        public Grade(String serialNo, String itemName, String score, String outof, String weight)
-        {
-            SerialNo = serialNo;
-            ItemName = itemName;
-            Score = score;
-            OutOf = outof;
-            Weight = weight;
+        public Grade(Integer weight, Double total){
+            Weightage = weight;
+            Total = total;
+        }
+
+        public Grade (String JsonString){
+            try {
+                JSONObject grade = new JSONObject(JsonString);
+                ID = grade.getInt("id");
+                Name = grade.getString("name");
+                OutOf = grade.getInt("out_of");
+                CourseID = grade.getInt("registered_course_id");
+                Score = grade.getInt("score");
+                UserID = grade.getInt("user_id");
+                Weightage = grade.getInt("weightage");
+                Total = ((((double) Score)/OutOf) * Weightage);
+            } catch (JSONException e) {
+                Log.d("JSON Exception : ", e.getMessage());
+            }
         }
     }
 
@@ -153,39 +148,25 @@ public class CourseGradesFragment extends Fragment{
             if (convertView == null)
                 convertView = inflater.inflate(R.layout.grade_item_layout, null);
 
-            TextView ItemName = (TextView) convertView.findViewById(R.id.courseGradeTitle);
-            TextView SNo = (TextView) convertView.findViewById(R.id.courseGradeSNo);
-            TextView score = (TextView) convertView.findViewById(R.id.courseGradeScore);
-            TextView weight = (TextView) convertView.findViewById(R.id.courseGradeWeight);
-            TextView absoluteMarks = (TextView) convertView.findViewById(R.id.courseGradeMarks);
+            TextView Name = (TextView) convertView.findViewById(R.id.courseGradeTitle);
+            TextView SerialNo = (TextView) convertView.findViewById(R.id.courseGradeSNo);
+            TextView Score = (TextView) convertView.findViewById(R.id.courseGradeScore);
+            TextView Weight = (TextView) convertView.findViewById(R.id.courseGradeWeight);
+            TextView Marks = (TextView) convertView.findViewById(R.id.courseGradeMarks);
+
             Grade grade = gradesList.get(position);
 
-            if(getCount()!=(position+1)){
-                String scoreText = grade.Score + "/" + grade.OutOf;
-                int sc = Integer.valueOf(grade.Score);
-                int of = Integer.valueOf(grade.OutOf);
-                int wt = Integer.valueOf(grade.Weight);
-                int mks = (int) (((double) sc / (double) of) * (double) wt);
-                String Marks = String.valueOf(mks);
-
-                ItemName.setText(grade.ItemName);
-                ItemName.setTypeface(MainActivity.Garibaldi);
-
-                SNo.setText(grade.SerialNo);
-                score.setText(scoreText);
-                weight.setText(grade.Weight);
-                absoluteMarks.setText(Marks);
-            }
-            else
-            {
-                ItemName.setText(grade.ItemName);
-                ItemName.setTypeface(MainActivity.Garibaldi);
-
-                SNo.setText(grade.SerialNo);
-                score.setText("-");
-                weight.setText(grade.Weight);
-                absoluteMarks.setText(grade.Score);
-
+            convertView.findViewById(R.id.ScoreLabel).setVisibility(View.VISIBLE);
+            SerialNo.setVisibility(View.VISIBLE);
+            Name.setText(grade.Name);
+            Name.setTypeface(MainActivity.Garibaldi);
+            SerialNo.setText(String.format("%d", position + 1));
+            Score.setText(String.format("%d/%d", grade.Score, grade.OutOf));
+            Weight.setText(String.format("%d", grade.Weightage));
+            Marks.setText(String.format("%.1f", grade.Total));
+            if(position == (getCount() - 1)) {
+                convertView.findViewById(R.id.ScoreLabel).setVisibility(View.INVISIBLE);
+                SerialNo.setVisibility(View.INVISIBLE);
             }
 
             return convertView;
