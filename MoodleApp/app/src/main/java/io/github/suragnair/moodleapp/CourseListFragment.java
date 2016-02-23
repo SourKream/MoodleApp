@@ -26,7 +26,8 @@ import java.util.List;
 public class CourseListFragment extends Fragment {
 
     // List of courses to populate fragment
-    private List<Course> courseList;
+    private List<Course> courseList = new ArrayList<>();
+    private ListView courseListView;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -34,14 +35,11 @@ public class CourseListFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_course_list, container, false);
         ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("Courses");
 
-        courseList = ((MyApplication) getActivity().getApplication()).MyCourses;
-        if (((MyApplication) getActivity().getApplication()).isUserLoggedIn() && (courseList.isEmpty())) {
+        if (((MyApplication) getActivity().getApplication()).isUserLoggedIn())
             populateCourseListFromServer();
-            courseList = ((MyApplication) getActivity().getApplication()).MyCourses;
-        }
 
         // Initialise listview by setting adapter and item click listener
-        ListView courseListView = (ListView) view.findViewById(R.id.courseList);
+        courseListView = (ListView) view.findViewById(R.id.courseList);
         courseListView.setAdapter(new CustomListAdapter(this.getActivity(), courseList));
         courseListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -67,7 +65,8 @@ public class CourseListFragment extends Fragment {
                     JSONArray jsonCourseList = new JSONArray(response.getString("courses"));
                     // Add courses to course list
                     for (int i=0; i<jsonCourseList.length(); i++)
-                        ((MyApplication) getActivity().getApplication()).MyCourses.add(new Course(jsonCourseList.getString(i)));
+                        courseList.add(new Course(jsonCourseList.getString(i)));
+                    ((CustomListAdapter) courseListView.getAdapter()).notifyDataSetChanged();
                 } catch (JSONException e){
                     Log.d("Json Exception", "Response from server wasn't JSON");
                 }

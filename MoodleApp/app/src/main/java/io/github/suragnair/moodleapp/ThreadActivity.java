@@ -23,6 +23,8 @@ import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class ThreadActivity extends AppCompatActivity {
 
@@ -31,6 +33,7 @@ public class ThreadActivity extends AppCompatActivity {
     private TextView threadTitle;
     private TextView threadCreatorName;
     private boolean firstTime;
+    private Timer timer = new Timer();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,6 +83,7 @@ public class ThreadActivity extends AppCompatActivity {
                     threadTitle.setText(courseThread.title);
                     threadTitle.setTypeface(MainActivity.Garibaldi);
                     updateComments();
+                    timer.scheduleAtFixedRate(new UpdateCommentsTask(), 10000, 10000);
                 } catch (JSONException e) {
                     Log.d("JSON Exception : ", e.getMessage());
                 }
@@ -94,9 +98,20 @@ public class ThreadActivity extends AppCompatActivity {
 
     private void updateComments(){
         CustomCommentListAdapter adapter = (CustomCommentListAdapter) commentsListView.getAdapter();
-        if (!firstTime) commentsListView.setSelection(commentsListView.getAdapter().getCount()-1);
-        if(firstTime) firstTime = false;
         adapter.notifyDataSetChanged();
+        if (!firstTime)
+            commentsListView.setSelection(commentsListView.getAdapter().getCount() - 1);
+        else
+            firstTime = false;
+    }
+
+    private class UpdateCommentsTask extends TimerTask{
+        @Override
+        public void run(){
+            Log.d("REFRESH", "Fetching new comments now... ");
+            firstTime = true;
+            reloadCommentsFromServer();
+        }
     }
 
     private void reloadCommentsFromServer(){
@@ -110,7 +125,7 @@ public class ThreadActivity extends AppCompatActivity {
                     String jsonCommentUsers = response.getString("comment_users");
                     courseThread.updateComments(jsonComments, jsonCommentUsers);
 
-                    ((CustomCommentListAdapter) commentsListView.getAdapter()).notifyDataSetChanged();
+                    updateComments();
                 } catch (JSONException e) {
                     Log.d("JSON Exception : ", e.getMessage());
                 }
@@ -130,7 +145,7 @@ public class ThreadActivity extends AppCompatActivity {
             @Override
             public void onSuccess(String result) {
                 commentEditText.setText("");
-                loadThreadData(courseThread.ID);
+                reloadCommentsFromServer();
             }
         });
     }
@@ -289,5 +304,11 @@ public class ThreadActivity extends AppCompatActivity {
                 }
             return convertView;
         }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        timer.cancel();
     }
 }
