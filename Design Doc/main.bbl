@@ -1,0 +1,21 @@
+\begin{thebibliography}{1}
+
+\bibitem{android_network_tutorial}
+Android network tutorial.
+\newblock
+  \url{http://developer.android.com/training/basics/network-ops/index.html}.
+
+\bibitem{android_screen_orientation}
+Android screen orientation handling.
+\newblock
+  \url{http://techblogon.com/android-screen-orientation-change-rotation-example/}.
+
+\bibitem{stackoverflow}
+Stack overflow.
+\newblock \url{http://stackoverflow.com/}.
+
+\bibitem{vogella}
+Vogella android tutorials.
+\newblock \url{http://www.vogella.com/tutorials/android.html}.
+
+\end{thebibliography}
