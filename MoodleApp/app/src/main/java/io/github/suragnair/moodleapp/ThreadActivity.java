@@ -41,16 +41,18 @@ public class ThreadActivity extends AppCompatActivity {
         threadTitle = (TextView) findViewById(R.id.threadTitle);
         threadCreatorName = (TextView) findViewById(R.id.threadUserName);
 
+        // load thread ID from Intent
         int threadID = getIntent().getIntExtra("thread_id",0);
         loadThreadData(threadID);
     }
 
     private void loadThreadData (int ID){
+        // Get data from server
         Networking.getData(9, new String[]{Integer.toString(ID)}, new Networking.VolleyCallback() {
             @Override
             public void onSuccess(String result) {
                 try {
-
+                    // Parse response and create new thraed object
                     JSONObject response = new JSONObject(result);
                     String jsonThread = response.getString("thread");
                     String jsonCourse = response.getString("course");
@@ -58,6 +60,7 @@ public class ThreadActivity extends AppCompatActivity {
                     String jsonCommentUsers = response.getString("comment_users");
                     courseThread = new CourseThread(jsonThread, jsonCourse, jsonComments, jsonCommentUsers);
 
+                    // Send extra request to get thread creator user's name
                     Networking.getData(12, new String[]{Integer.toString(courseThread.userID)}, new Networking.VolleyCallback() {
                         @Override
                         public void onSuccess(String result) {
@@ -72,8 +75,8 @@ public class ThreadActivity extends AppCompatActivity {
                         }
                     });
 
+                    // Initialise list view
                     initialiseListView(courseThread.description);
-
                     threadTitle.setText(courseThread.title);
                     threadTitle.setTypeface(MainActivity.Garibaldi);
                     updateComments();
@@ -97,18 +100,17 @@ public class ThreadActivity extends AppCompatActivity {
     }
 
     private void reloadCommentsFromServer(){
+        // For periodic refresh of comments
         Networking.getData(9, new String[]{Integer.toString(courseThread.ID)}, new Networking.VolleyCallback() {
             @Override
             public void onSuccess(String result) {
                 try {
-
                     JSONObject response = new JSONObject(result);
                     String jsonComments = response.getString("comments");
                     String jsonCommentUsers = response.getString("comment_users");
                     courseThread.updateComments(jsonComments, jsonCommentUsers);
 
                     ((CustomCommentListAdapter) commentsListView.getAdapter()).notifyDataSetChanged();
-
                 } catch (JSONException e) {
                     Log.d("JSON Exception : ", e.getMessage());
                 }
@@ -123,6 +125,7 @@ public class ThreadActivity extends AppCompatActivity {
 
         if (comment.isEmpty()) return;
 
+        // Post new comment to server
         Networking.getData(11, new String[]{Integer.toString(courseThread.ID), comment}, new Networking.VolleyCallback() {
             @Override
             public void onSuccess(String result) {
@@ -130,9 +133,9 @@ public class ThreadActivity extends AppCompatActivity {
                 loadThreadData(courseThread.ID);
             }
         });
-
     }
 
+    // Class to store details of a Thread
     public static class CourseThread{
         List<User> commentUsers;
         List<Comment> comments;
@@ -147,9 +150,9 @@ public class ThreadActivity extends AppCompatActivity {
 
         User threadCreator;
 
+        // Constructor parses JSON string and stores data in object
         public CourseThread (String jsonThread, String jsonCourse, String jsonComments, String jsonCommentUsers){
             try {
-
                 JSONObject thread = new JSONObject(jsonThread);
                 title = thread.getString("title");
                 description = thread.getString("description");
@@ -209,6 +212,7 @@ public class ThreadActivity extends AppCompatActivity {
         }
     }
 
+    // Class to store details of a comment
     public static class Comment{
         String createdAt;
         String Description;
@@ -216,14 +220,7 @@ public class ThreadActivity extends AppCompatActivity {
         int ThreadID;
         int UserID;
 
-        public Comment (String created_at, String desc, int id, int t_id, int u_id){
-            createdAt = created_at;
-            Description = desc;
-            ID = id;
-            ThreadID = t_id;
-            UserID = u_id;
-        }
-
+        // Constructor parses JSON string and stores data in object
         public Comment (String JsonString){
             try {
                 JSONObject comment = new JSONObject(JsonString);
@@ -238,6 +235,7 @@ public class ThreadActivity extends AppCompatActivity {
         }
     }
 
+    // Custom adapter to populate list view
     public static class CustomCommentListAdapter extends BaseAdapter {
 
         private Activity activity;
@@ -273,7 +271,6 @@ public class ThreadActivity extends AppCompatActivity {
         public View getView(int position, View convertView, ViewGroup parent) {
             if (inflater == null)
                 inflater = (LayoutInflater) activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-           // if (convertView == null) {
 
                 if (position == 0) {
                     convertView = inflater.inflate(R.layout.thread_comment_list_header, null);
@@ -288,12 +285,9 @@ public class ThreadActivity extends AppCompatActivity {
                     Comment comment = commentList.get(commentList.size() - position );
                     User user = commentUserList.get(commentUserList.size() - position );
                     commentDescription.setText(comment.Description);
-                    commentUsername.setText(user.firstName + " " + user.lastName);
-
+                    commentUsername.setText(String.format("%s %s",user.firstName,user.lastName));
                 }
-            //}
             return convertView;
         }
     }
-
 }

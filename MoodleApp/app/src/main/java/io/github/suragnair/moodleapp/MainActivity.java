@@ -33,7 +33,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // fonts
+        // Fonts
         Garibaldi = Typeface.createFromAsset(getAssets(), "fonts/Garibaldi.ttf");
         MyriadPro = Typeface.createFromAsset(getAssets(), "fonts/MyriadPro.ttf");
 
@@ -48,6 +48,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        // Setting up drawer layout for navigation menu
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawerSliderLayout = (RelativeLayout) findViewById(R.id.left_drawer);
 
@@ -70,6 +71,7 @@ public class MainActivity extends AppCompatActivity {
     public void onResume() {
         super.onResume();
 
+        // Populate with the required fragment
         if (COURSES_FRAGMENT_FLAG){
             currentFragment = 0;
             changeFragment(currentFragment);
@@ -78,10 +80,12 @@ public class MainActivity extends AppCompatActivity {
         else
             changeFragment(currentFragment);
 
+        // Checks if user is logged in and starts LoginActivity if not
         loginUser();
     }
 
     private void loginUser(){
+        // Checks if user is logged in and starts LoginActivity if not
         MyApplication myApplication = (MyApplication) getApplication();
         if (!myApplication.isUserLoggedIn()) {
             COURSES_FRAGMENT_FLAG = true;
@@ -97,6 +101,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public boolean onOptionsItemSelected (MenuItem item){
+        // Switch to Notifications Fragment on clicking Bell
         if ((item.getItemId() == R.id.notificationButton)&&(currentFragment != 2)){
             currentFragment = 2;
             changeFragment(currentFragment);
@@ -106,13 +111,14 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void changeFragment (int position){
+        // Switch the current fragment of the activity
         Fragment fragment;
         switch (position) {
-            case 0: fragment = new CourseListFragment();
+            case 0: fragment = new CourseListFragment();    // List of Courses
                     break;
-            case 1: fragment = new GradesFragment();
+            case 1: fragment = new GradesFragment();        // List of Grades
                     break;
-            case 2: fragment = new NotificationsFragment();
+            case 2: fragment = new NotificationsFragment(); // List of Notifications
                     break;
             default: return;
         }
@@ -123,6 +129,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public boolean onKeyDown(int keycode, KeyEvent event){
+        // Return to course list fragment on clicking back button
         if (keycode == KeyEvent.KEYCODE_BACK){
             if (currentFragment == 2 || currentFragment == 1){
                 currentFragment = 0;
@@ -133,6 +140,7 @@ public class MainActivity extends AppCompatActivity {
         return super.onKeyDown(keycode, event);
     }
 
+    // Sign out user
     public void signOutClicked (View view){
         drawerLayout.closeDrawer(drawerSliderLayout);
         Networking.getData(1, new String[0], new Networking.VolleyCallback() {

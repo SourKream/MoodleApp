@@ -30,35 +30,39 @@ import java.util.Comparator;
 
 public class CourseThreadsFragment extends Fragment{
 
-    private List<ThreadActivity.CourseThread> threadList = new ArrayList<ThreadActivity.CourseThread>();
+    // List of threads to populate list
+    private List<ThreadActivity.CourseThread> threadList = new ArrayList<>();
     private ListView threadListView;
     public String CourseName;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         Bundle bundle = this.getArguments();
         CourseName = bundle.getString("coursename");
         addThreads();
-        sortThreads();
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_course_threads, container, false);
+
+        // Initialise listview by setting adapter and item click listener
         threadListView = (ListView) view.findViewById(R.id.ThreadList);
         threadListView.setAdapter(new CustomListAdapter(this.getActivity(), threadList));
         threadListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                // Go to the specific thread activity when item is clicked
+                // Thread ID passed in Intent to populate next activity with the required data
                 Intent intent = new Intent(getActivity(), ThreadActivity.class);
                 intent.putExtra("thread_id", threadList.get(position).ID);
                 startActivity(intent);
             }
         });
+
+        // Set item click listener to button for New Thread
         FloatingActionButton fab = (FloatingActionButton) view.findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -73,31 +77,32 @@ public class CourseThreadsFragment extends Fragment{
     }
 
     public void newThreadClicked (View view){
+        // Activity for creating new thread in given course started
         Intent intent = new Intent(getActivity(), NewThreadActivity.class);
         intent.putExtra("courseCode",CourseName);
         startActivity(intent);
     }
 
-    public void addThreads()
-    {
+    public void addThreads() {
+        // Get data from server
         Networking.getData(8, new String[]{CourseName}, new Networking.VolleyCallback() {
             @Override
             public void onSuccess(String result) {
                 try {
+                    // Parse response
                     JSONObject response = new JSONObject(result);
                     JSONArray jsonThreadList = new JSONArray(response.getString("course_threads"));
 
-                    if (jsonThreadList.length()==0)
+                    if (jsonThreadList.length() == 0) {
                         getActivity().findViewById(R.id.emptyCourseThread).setVisibility(View.VISIBLE);
-
-                    else {
+                    } else {
+                        // Add thread to thread list
                         for (int i = 0; i < jsonThreadList.length(); i++)
                             threadList.add(new ThreadActivity.CourseThread(jsonThreadList.getString(i)));
-                        CustomListAdapter adapter = (CustomListAdapter) threadListView.getAdapter();
-                        adapter.notifyDataSetChanged();
+                        // Notify listview adapter to update UI
+                        ((CustomListAdapter) threadListView.getAdapter()).notifyDataSetChanged();
                         getActivity().findViewById(R.id.emptyCourseThread).setVisibility(View.GONE);
                     }
-
                 } catch (JSONException e) {
                     Log.d("JSON Exception : ", e.getMessage());
                 }
@@ -105,23 +110,7 @@ public class CourseThreadsFragment extends Fragment{
         });
     }
 
-    //Sorting threads on the basis of recently updated one
-
-    public void sortThreads()
-    {
-        Collections.sort(threadList, new Comparator<ThreadActivity.CourseThread>() {
-            DateFormat f = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            @Override
-            public int compare(ThreadActivity.CourseThread o1, ThreadActivity.CourseThread o2) {
-                try {
-                    return f.parse(o2.updatedAt).compareTo(f.parse(o1.updatedAt));
-                } catch (ParseException e) {
-                    throw new IllegalArgumentException(e);
-                }
-            }
-        });
-    }
-
+    // Custom adapter to populate list view
     public class CustomListAdapter extends BaseAdapter{
 
         private Activity activity;
@@ -165,12 +154,10 @@ public class CourseThreadsFragment extends Fragment{
 
             threadTitle.setText(thread.title);
             threadTitle.setTypeface(MainActivity.Garibaldi);
-
-            threadID.setText(Integer.toString(position + 1));
+            threadID.setText(String.format("%d",position+1));
             threadDescription.setText(thread.description);
             threadCreatedAt.setText(thread.createdAt);
             threadLastUpdate.setText(thread.updatedAt);
-
             return convertView;
         }
     }

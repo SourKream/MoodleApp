@@ -1,7 +1,5 @@
 package io.github.suragnair.moodleapp;
 
-import android.content.Intent;
-import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -12,14 +10,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
-//TODO: highlight active fragment ka image
-
 public class CourseActivity extends AppCompatActivity {
 
+    // Course code for the course that populates the activity
     public String CourseTitle;
 
     @Override
@@ -27,12 +23,14 @@ public class CourseActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_course);
 
+        // Getting course code from the Intent
         CourseTitle = getIntent().getStringExtra("coursename");
         setTitle(CourseTitle.toUpperCase() + " : Assignments");
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        // Setting up the view pager
         ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
         setupViewPager(viewPager);
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
@@ -57,6 +55,7 @@ public class CourseActivity extends AppCompatActivity {
             public void onPageScrollStateChanged(int state) {}
         });
 
+        // Setting up the tab layout
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(viewPager);
         try {
@@ -114,7 +113,7 @@ public class CourseActivity extends AppCompatActivity {
 
         @Override
         public CharSequence getPageTitle(int position) {
-            return null; //mFragmentTitleList.get(position);
+            return null;
         }
     }
 }

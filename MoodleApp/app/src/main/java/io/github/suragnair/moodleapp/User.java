@@ -13,15 +13,6 @@ class User {
     String email;
     String entryNo;
 
-    public User (int id, String usern, String first, String last, String em, String entryno){
-        ID = id;
-        firstName = first;
-        lastName = last;
-        username = usern;
-        email = em;
-        entryNo = entryno;
-    }
-
     public User (String JsonString){
         try {
             JSONObject user = new JSONObject(JsonString);

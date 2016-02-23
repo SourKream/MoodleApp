@@ -23,12 +23,10 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-//TODO: add colours to styles and use from there
-
 public class CourseListFragment extends Fragment {
 
+    // List of courses to populate fragment
     private List<Course> courseList;
-    private ListView courseListView = null;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -41,11 +39,15 @@ public class CourseListFragment extends Fragment {
             populateCourseListFromServer();
             courseList = ((MyApplication) getActivity().getApplication()).MyCourses;
         }
-        courseListView = (ListView) view.findViewById(R.id.courseList);
+
+        // Initialise listview by setting adapter and item click listener
+        ListView courseListView = (ListView) view.findViewById(R.id.courseList);
         courseListView.setAdapter(new CustomListAdapter(this.getActivity(), courseList));
         courseListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                // Go to the specific course activity when the course item is clicked
+                // Pass coursecode in Intent to populate next activity with the required data
                 Intent intent = new Intent(getActivity(), CourseActivity.class);
                 intent.putExtra("coursename", courseList.get(position).CourseCode);
                 startActivity(intent);
@@ -55,12 +57,15 @@ public class CourseListFragment extends Fragment {
     }
 
     public void populateCourseListFromServer(){
+        // Get data from server
         Networking.getData(2, new String[0], new Networking.VolleyCallback() {
             @Override
             public void onSuccess(String result) {
                 try {
+                    // Parse response
                     JSONObject response = new JSONObject(result);
                     JSONArray jsonCourseList = new JSONArray(response.getString("courses"));
+                    // Add courses to course list
                     for (int i=0; i<jsonCourseList.length(); i++)
                         ((MyApplication) getActivity().getApplication()).MyCourses.add(new Course(jsonCourseList.getString(i)));
                 } catch (JSONException e){
@@ -70,6 +75,7 @@ public class CourseListFragment extends Fragment {
         });
     }
 
+    // Class to store details of a course
     public static class Course{
         int ID;
         int Credits;
@@ -78,6 +84,7 @@ public class CourseListFragment extends Fragment {
         String CourseDescription;
         String LTP;
 
+        // Constructor parses JSON string and stores data in object
         public Course (String JsonString){
             try {
                 JSONObject course = new JSONObject(JsonString);
@@ -93,8 +100,8 @@ public class CourseListFragment extends Fragment {
         }
     }
 
+    // Custom adapter to populate list view
     class CustomListAdapter extends BaseAdapter{
-
         private Activity activity;
         private LayoutInflater inflater;
         private List<Course> courseList;
@@ -129,14 +136,13 @@ public class CourseListFragment extends Fragment {
             TextView courseCode = (TextView) convertView.findViewById(R.id.courseCode);
             TextView courseName = (TextView) convertView.findViewById(R.id.courseName);
             TextView LTP = (TextView) convertView.findViewById(R.id.ltp);
+
             Course course = courseList.get(position);
 
             courseCode.setText(course.CourseCode.toUpperCase());
             courseCode.setTypeface(MainActivity.MyriadPro);
-
             courseName.setText(course.CourseName);
             courseName.setTypeface(MainActivity.Garibaldi);
-
             LTP.setText(String.format("(%s)",course.LTP));
             LTP.setTypeface(MainActivity.MyriadPro);
 

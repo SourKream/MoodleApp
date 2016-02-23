@@ -1,7 +1,6 @@
 package io.github.suragnair.moodleapp;
 
 import android.app.Application;
-import android.graphics.Typeface;
 
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
@@ -10,40 +9,35 @@ import java.net.CookieHandler;
 import java.net.CookieManager;
 import java.util.ArrayList;
 import java.util.List;
-
-/**
- * Created by snair on 16/02/16.
- * Instantiating Global Volley Queue
- * Instantiating Cookie Handler
- */
-
+import io.github.suragnair.moodleapp.CourseListFragment.Course;
 
 public class MyApplication extends Application
 {
+    // Volley Queue Global throughout the app
     public static RequestQueue mRequestQueue;
 
+    // Info of the user to check login
     private User MyUser = null;
-    public List<CourseListFragment.Course> MyCourses = new ArrayList<>();
+
+    // List of courses of the user
+    public List<Course> MyCourses = new ArrayList<>();
 
     @Override
     public void onCreate() {
         super.onCreate();
 
+        // Instantiating Global Volley Queue
         mRequestQueue = Volley.newRequestQueue(getApplicationContext());
 
+        // Instantiating Cookie Handler
         CookieManager manager = new CookieManager();
         CookieHandler.setDefault(manager);
     }
 
-    boolean isUserLoggedIn(){
+    public boolean isUserLoggedIn(){
         return MyUser!=null;
     }
-
     public void setMyUser (User user){
         MyUser = user;
     }
-
-    // Getter for RequestQueue or just make it public
-
-
 }

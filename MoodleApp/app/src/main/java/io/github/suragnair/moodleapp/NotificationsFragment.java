@@ -38,10 +38,10 @@ public class NotificationsFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_notifications, container, false);
         ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle("Notifications");
         
-        // TODO Fragment populated from server every time
         if (((MyApplication) getActivity().getApplication()).isUserLoggedIn())
             populateNotificationsFromServer();
 
+        // Initialise listview by setting adapter and item click listener
         notificationsListView = (ListView) view.findViewById(R.id.NotificationsListView);
         notificationsListView.setAdapter(new CustomListAdapter(this.getActivity(), notifications));
         notificationsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -49,7 +49,7 @@ public class NotificationsFragment extends Fragment {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 view.setBackgroundColor(getResources().getColor(R.color.backgroundCustom));
                 notifications.get(position).Seen();
-
+                // Go to the required threads activity on item click
                 String description = notifications.get(position).description;
                 Log.d("ThreadID : ", description);
                 description = description.substring(description.indexOf("/threads/thread/") + 16,description.indexOf("'>thread"));
@@ -61,12 +61,15 @@ public class NotificationsFragment extends Fragment {
     }
 
     private void populateNotificationsFromServer(){
+        // Get data from server
         Networking.getData(3, new String[0], new Networking.VolleyCallback() {
             @Override
             public void onSuccess(String result) {
                 try {
+                    // Parse response
                     JSONObject response = new JSONObject(result);
                     JSONArray jsonNotificationsList = new JSONArray(response.getString("notifications"));
+                    // Add notifications to list
                     for (int i=0; i<jsonNotificationsList.length(); i++)
                         notifications.add(new Notification(jsonNotificationsList.getString(i)));
                     ((CustomListAdapter) notificationsListView.getAdapter()).notifyDataSetChanged();
@@ -83,6 +86,7 @@ public class NotificationsFragment extends Fragment {
         startActivity(intent);
     }
 
+    // Class to store details of a notification
     public static class Notification{
         String createdAt;
         String description;
@@ -106,6 +110,7 @@ public class NotificationsFragment extends Fragment {
         public void Seen(){isSeen = 1;}
     }
 
+    // Custom adapter to populate list view
     class CustomListAdapter extends BaseAdapter {
 
         private Activity activity;

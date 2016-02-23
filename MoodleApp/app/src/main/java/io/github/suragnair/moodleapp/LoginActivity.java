@@ -58,27 +58,19 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void attemptLogin (String username, String password){
+        // Send login request to server
         Networking.getData(0, new String[]{username, password}, new Networking.VolleyCallback() {
             @Override
             public void onSuccess(String result) {
                 try {
                     JSONObject response = new JSONObject(result);
                     if (response.getString("success").equals("true")) {
-                        // Indent to Main Activity
-                        JSONObject user = new JSONObject(response.getString("user"));
-                        MyApplication myApplication = (MyApplication) getApplication();
-
-                        int ID = user.getInt("id");
-                        String username = user.getString("username");
-                        String firstName = user.getString("first_name");
-                        String lastName = user.getString("last_name");
-                        String email = user.getString("email");
-                        String entryNo = user.getString("entry_no");
-
-                        myApplication.setMyUser(new User(ID,username,firstName,lastName,email,entryNo));
+                        // Populate application with user details
+                        ((MyApplication) getApplication()).setMyUser(new User(response.getString("user")));
+                        // Close activity to resume MainActivity
                         finish();
                     } else {
-                        // TOAST invalid credentials
+                        // In case of Invalid credentials
                         Toast.makeText(getApplicationContext(), "Invalid Credentials", Toast.LENGTH_SHORT).show();
                     }
                 } catch (JSONException e) {

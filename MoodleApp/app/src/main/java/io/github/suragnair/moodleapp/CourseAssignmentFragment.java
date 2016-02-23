@@ -23,21 +23,16 @@ import java.util.List;
 
 public class CourseAssignmentFragment extends Fragment{
 
-    private List<Assignment> assignmentList = new ArrayList<Assignment>();
-    private ListView AssgnListView =null;
+    // List of all assignments for the course
+    private List<Assignment> assignmentList = new ArrayList<>();
+    private ListView AssignListView =null;
     public String CourseName;
-
-    public CourseAssignmentFragment() {
-        // Required empty public constructor
-    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         Bundle bundle = this.getArguments();
         CourseName = bundle.getString("coursename");
-
         addAssignments();
     }
 
@@ -47,13 +42,15 @@ public class CourseAssignmentFragment extends Fragment{
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_course_assignment, container, false);
 
-        AssgnListView = (ListView) view.findViewById(R.id.AssignmentList);
-        AssgnListView.setAdapter(new CustomListAdapter(this.getActivity(), assignmentList));
-        AssgnListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        // Initialise the listview by assigning adapter and setting on item click listener
+        AssignListView = (ListView) view.findViewById(R.id.AssignmentList);
+        AssignListView.setAdapter(new CustomListAdapter(this.getActivity(), assignmentList));
+        AssignListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                // Tapping on assignment starts intent to go to the Assignment's activity
+                // Assignment ID passed through the intent to load the required assignment
                 Intent intent = new Intent(getActivity(), AssignmentActivity.class);
-                intent.putExtra("coursename", CourseName);
                 intent.putExtra("assignment_id", assignmentList.get(position).ID);
                 startActivity(intent);
             }
@@ -64,34 +61,35 @@ public class CourseAssignmentFragment extends Fragment{
         return view;
     }
 
-    public void addAssignments()
-    {
+    public void addAssignments() {
+        // Load all assignments from the server
         Networking.getData(5, new String[]{CourseName}, new Networking.VolleyCallback() {
             @Override
             public void onSuccess(String result) {
                 try {
+                    // Parse response
                     JSONObject response = new JSONObject(result);
                     JSONArray jsonAssignmentList = new JSONArray(response.getString("assignments"));
 
                     if (jsonAssignmentList.length()==0) {
                         getActivity().findViewById(R.id.emptyCourseAssignment).setVisibility(View.VISIBLE);
-                    }
-
-                    else {
+                    } else {
+                        // Add assignments to the list
                         for (int i = 0; i < jsonAssignmentList.length(); i++)
                             assignmentList.add(new Assignment(jsonAssignmentList.getString(i)));
-                        ((CustomListAdapter) AssgnListView.getAdapter()).notifyDataSetChanged();
+
+                        // Notify ListviewAdapter to update UI
+                        ((CustomListAdapter) AssignListView.getAdapter()).notifyDataSetChanged();
                         getActivity().findViewById(R.id.emptyCourseAssignment).setVisibility(View.GONE);
                     }
-
                 } catch (JSONException e){
                     Log.d("Json Exception", "Response from server wasn't JSON");
                 }
             }
         });
-
     }
 
+    // Class for Assignment Details
     public static class Assignment{
         String CreatedAt;
         String Deadline;
@@ -101,6 +99,7 @@ public class CourseAssignmentFragment extends Fragment{
         String Name;
         Integer CourseID;
 
+        // Constructor automatically parses JSON and stores data in the onject
         public Assignment (String JsonString){
             try {
                 JSONObject assignment = new JSONObject(JsonString);
@@ -117,6 +116,7 @@ public class CourseAssignmentFragment extends Fragment{
         }
     }
 
+    // List View Adapter to populate Custom Assignment List View
     public class CustomListAdapter extends BaseAdapter {
 
         private Activity activity;
@@ -159,13 +159,10 @@ public class CourseAssignmentFragment extends Fragment{
 
             assgnName.setText(assignment.Name);
             assgnName.setTypeface(MainActivity.Garibaldi);
-
-            assgnSNo.setText(Integer.toString(position + 1));
+            assgnSNo.setText(String.format("%d",position+1));
             //assgnSNo.setTypeface(MainActivity.Garibaldi);
-
             assgnDeadline.setText(assignment.Deadline);
             //assgnDeadline.setTypeface(MainActivity.MyriadPro);
-
             assgnCreated.setText(assignment.CreatedAt);
             //assgnCreated.setTypeface(MainActivity.MyriadPro);
 

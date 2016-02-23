@@ -22,7 +22,9 @@ import io.github.suragnair.moodleapp.CourseListFragment.Course;
 
 public class GradesFragment extends Fragment {
 
+    // List of grades to populate list view
     private List<Grade> grades = new ArrayList<>();
+    // List of courses corresponding to each grade
     private List<Course> courses = new ArrayList<>();
     private ListView gradesListView = null;
 
@@ -32,27 +34,32 @@ public class GradesFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_notifications, container, false);
         ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle("Grades");
 
-        // TODO Fragment populated from server every time
+        // Fetch data from server
         if (((MyApplication) getActivity().getApplication()).isUserLoggedIn())
             populateGradesFromServer();
 
+        // Initialise listview by setting adapter
         gradesListView = (ListView) view.findViewById(R.id.NotificationsListView);
         gradesListView.setAdapter(new CustomGradesListAdapter(this.getActivity(), grades, courses));
         return view;
     }
 
     private void populateGradesFromServer(){
+        // Get data from server
         Networking.getData(4, new String[0], new Networking.VolleyCallback() {
             @Override
             public void onSuccess(String result) {
                 try {
+                    // Parse response
                     JSONObject response = new JSONObject(result);
                     JSONArray jsonGradesList = new JSONArray(response.getString("grades"));
                     JSONArray jsonCoursesList = new JSONArray(response.getString("courses"));
+                    // Add grades info to list
                     for (int i = 0; i < jsonGradesList.length(); i++) {
                         grades.add(new Grade(jsonGradesList.getString(i)));
                         courses.add(new Course(jsonCoursesList.getString(i)));
                     }
+                    // Notify listview adapter to update UI
                     ((CustomGradesListAdapter) gradesListView.getAdapter()).notifyDataSetChanged();
                 } catch (JSONException e) {
                     Log.d("Json Exception", "Response from server wasn't JSON");

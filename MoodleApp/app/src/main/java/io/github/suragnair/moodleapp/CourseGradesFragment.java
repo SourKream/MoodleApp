@@ -1,11 +1,9 @@
 package io.github.suragnair.moodleapp;
 
 import android.app.Activity;
-import android.content.ClipData;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,14 +22,14 @@ import io.github.suragnair.moodleapp.CourseListFragment.Course;
 
 public class CourseGradesFragment extends Fragment{
 
-    private List<Grade> gradeList = new ArrayList<Grade>();
+    // List of grades displayed
+    private List<Grade> gradeList = new ArrayList<>();
     private ListView GradeListView = null;
     public String CourseName;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         Bundle bundle = this.getArguments();
         CourseName = bundle.getString("coursename");
         populateGradeList();
@@ -40,8 +38,9 @@ public class CourseGradesFragment extends Fragment{
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_course_grade, container, false);
+
+        // Initialise list view with adapter
         GradeListView = (ListView) view.findViewById(R.id.GradesList);
         GradeListView.setAdapter(new CustomGradesListAdapter(this.getActivity(), gradeList));
 
@@ -49,21 +48,22 @@ public class CourseGradesFragment extends Fragment{
 
         return view;
     }
-    public void populateGradeList()
-    {
+    public void populateGradeList() {
+        // Getting the required grades from the server
         Networking.getData(7, new String[]{CourseName}, new Networking.VolleyCallback() {
             @Override
             public void onSuccess(String result) {
                 try {
+                    // Parsing response
                     JSONObject response = new JSONObject(result);
                     JSONArray jsonGradeList = new JSONArray(response.getString("grades"));
 
-                    if (jsonGradeList.length()==0)
+                    if (jsonGradeList.length()==0) {
                         getActivity().findViewById(R.id.emptyCourseGrade).setVisibility(View.VISIBLE);
-
-                    else {
+                    } else {
                         Integer totalWeight = 0;
                         Double totalMarks = 0.0;
+                        // Adding grade objects to the list
                         for (int i = 0; i < jsonGradeList.length(); i++){
                             Grade grade = new Grade(jsonGradeList.getString(i));
                             gradeList.add(grade);
@@ -71,9 +71,9 @@ public class CourseGradesFragment extends Fragment{
                             totalMarks = totalMarks + ((((double) grade.Score)/grade.OutOf) * grade.Weightage);
                         }
 
-                        gradeList.add(new Grade(totalWeight, totalMarks)); // For Total
-                        CustomGradesListAdapter adapter = (CustomGradesListAdapter) GradeListView.getAdapter();
-                        adapter.notifyDataSetChanged();
+                        gradeList.add(new Grade(totalWeight, totalMarks)); // For Total grades list item
+                        // Notify adapter to update UI
+                        ((CustomGradesListAdapter) GradeListView.getAdapter()).notifyDataSetChanged();
                         getActivity().findViewById(R.id.emptyCourseGrade).setVisibility(View.GONE);
                     }
                 } catch (JSONException e) {
@@ -84,6 +84,7 @@ public class CourseGradesFragment extends Fragment{
 
     }
 
+    // Class to store Grade details
     public static class Grade{
         Integer ID;
         String Name = "TOTAL";
@@ -116,6 +117,7 @@ public class CourseGradesFragment extends Fragment{
         }
     }
 
+    // Custom adapter to populate grade list view
     public static class CustomGradesListAdapter extends BaseAdapter {
 
         private Activity activity;
@@ -163,18 +165,22 @@ public class CourseGradesFragment extends Fragment{
             if (courseList == null)
                 convertView.findViewById(R.id.CourseLabel).setVisibility(View.GONE);
             else {
+                // When coursename needs to be displayed along with the grade
                 convertView.findViewById(R.id.CourseLabel).setVisibility(View.VISIBLE);
                 ((TextView) convertView.findViewById(R.id.courseCodeLabel)).setText(courseList.get(position).CourseCode.toUpperCase());
             }
 
+            // Find textviews from the view
             TextView Name = (TextView) convertView.findViewById(R.id.courseGradeTitle);
             TextView SerialNo = (TextView) convertView.findViewById(R.id.courseGradeSNo);
             TextView Score = (TextView) convertView.findViewById(R.id.courseGradeScore);
             TextView Weight = (TextView) convertView.findViewById(R.id.courseGradeWeight);
             TextView Marks = (TextView) convertView.findViewById(R.id.courseGradeMarks);
 
+            // Get data to popiulate view
             Grade grade = gradesList.get(position);
 
+            // Assign data to textview
             convertView.findViewById(R.id.ScoreLabel).setVisibility(View.VISIBLE);
             SerialNo.setVisibility(View.VISIBLE);
             Name.setText(grade.Name);
@@ -183,6 +189,7 @@ public class CourseGradesFragment extends Fragment{
             Score.setText(String.format("%d/%d", grade.Score, grade.OutOf));
             Weight.setText(String.format("%d", grade.Weightage));
             Marks.setText(String.format("%.1f", grade.Total));
+            // In case of Total score list item
             if((position == (getCount() - 1))&&(showTotal)) {
                 convertView.findViewById(R.id.ScoreLabel).setVisibility(View.INVISIBLE);
                 SerialNo.setVisibility(View.INVISIBLE);

@@ -12,7 +12,6 @@ import android.widget.Toast;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-//TODO: sk- am able to post a new thread without title
 public class NewThreadActivity extends AppCompatActivity {
 
     @Override
@@ -24,22 +23,23 @@ public class NewThreadActivity extends AppCompatActivity {
     }
 
     public void postThreadClicked(View view){
-
         EditText title = (EditText) findViewById(R.id.newThreadTitle);
         EditText description = (EditText) findViewById(R.id.newThreadDescription);
-
         String threadTitle = title.getText().toString();
         String threadDescription = description.getText().toString();
         String courseCode = getIntent().getStringExtra("courseCode");
 
+        // Check if valid thread entries
         if (threadTitle.isEmpty()) {title.setHint("Title (Required)"); return;}
         if (threadDescription.isEmpty()) {description.setHint("Description (Required)"); return;}
 
+        // Send New Thread requst to server
         Networking.getData(10, new String[]{threadTitle.replace(" ", "%20"), threadDescription.replace(" ", "%20"), courseCode.toLowerCase()}, new Networking.VolleyCallback() {
             @Override
             public void onSuccess(String result) {
                 try {
                     JSONObject response = new JSONObject(result);
+                    // Start Thread's activity in case of successful posting
                     if (response.getString("success").equals("true")) {
                         startThreadActivity(response.getInt("thread_id"));
                     }
