@@ -80,10 +80,9 @@ public class CourseThreadsFragment extends Fragment{
         super.onResume();
 
         if (CourseActivity.newThreadPosted){
-            // reload threads
+            // reload threads if new thread posted
             threadList.clear();
             addThreads();
-            sortThreads();
             CourseActivity.newThreadPosted = false;
         }
     }
