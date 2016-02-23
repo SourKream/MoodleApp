@@ -83,7 +83,6 @@ public class CourseThreadsFragment extends Fragment{
             // reload threads
             threadList.clear();
             addThreads();
-            sortThreads();
             CourseActivity.newThreadPosted = false;
         }
     }
