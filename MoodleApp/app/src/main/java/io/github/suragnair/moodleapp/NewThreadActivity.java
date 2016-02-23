@@ -41,7 +41,9 @@ public class NewThreadActivity extends AppCompatActivity {
                     JSONObject response = new JSONObject(result);
                     // Start Thread's activity in case of successful posting
                     if (response.getString("success").equals("true")) {
+                        CourseActivity.newThreadPosted = true;
                         startThreadActivity(response.getInt("thread_id"));
+
                     }
                 } catch (JSONException e) {
                     Log.d("JSON Exception", e.getMessage());

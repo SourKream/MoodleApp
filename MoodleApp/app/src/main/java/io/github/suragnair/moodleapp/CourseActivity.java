@@ -17,6 +17,7 @@ public class CourseActivity extends AppCompatActivity {
 
     // Course code for the course that populates the activity
     public String CourseTitle;
+    public static boolean newThreadPosted = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
