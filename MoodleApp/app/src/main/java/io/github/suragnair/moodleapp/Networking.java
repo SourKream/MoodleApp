@@ -1,6 +1,7 @@
 package io.github.suragnair.moodleapp;
 
 import android.util.Log;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.Response;
@@ -9,19 +10,19 @@ import com.android.volley.VolleyError;
 
 public class Networking {
 
-    private final static String urlBase = "http://192.168.1.4:8000";
+    private final static String urlBase = "http://10.192.52.158:8000";
 
-    private final static String extensions[][] = {                                     //   optional inputs
-            new String[] {"/default/login.json?userid=","&password=",""},       //0
-            new String[] {"/default/logout.json"},                              //1
-            new String[] {"/courses/list.json"},                                //2
-            new String[] {"/default/notifications.json"},                       //3
-            new String[] {"/default/grades.json"},                              //4
-            new String[] {"/courses/course.json/","/assignments"},              //5- course code
-            new String[] {"/courses/assignment.json/",""},                      //6- assignment #
-            new String[] {"/courses/course.json/","/grades"},                   //7- course code
-            new String[] {"/courses/course.json/","/threads"},                  //8- course code
-            new String[] {"/threads/thread.json/",""},                           //9- thread #
+    private final static String extensions[][] = {                                        //   optional inputs
+            new String[] {"/default/login.json?userid=","&password=",""},                 //0
+            new String[] {"/default/logout.json"},                                        //1
+            new String[] {"/courses/list.json"},                                          //2
+            new String[] {"/default/notifications.json"},                                 //3
+            new String[] {"/default/grades.json"},                                        //4
+            new String[] {"/courses/course.json/","/assignments"},                        //5- course code
+            new String[] {"/courses/assignment.json/",""},                                //6- assignment #
+            new String[] {"/courses/course.json/","/grades"},                             //7- course code
+            new String[] {"/courses/course.json/","/threads"},                            //8- course code
+            new String[] {"/threads/thread.json/",""},                                    //9- thread #
             new String[] {"/threads/new.json?title=","&description=","&course_code=",""}, //10
             new String[] {"/threads/post_comment.json?thread_id=","&description=",""},    //11
             new String[] {"/users/user.json/",""}                                         //12
@@ -50,7 +51,6 @@ public class Networking {
         },  new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                // TODO
             }});
 
         MyApplication.mRequestQueue.add(stringRequest);
