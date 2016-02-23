@@ -19,9 +19,6 @@ public class MyApplication extends Application
     // Info of the user to check login
     private User MyUser = null;
 
-    // List of courses of the user
-    public List<Course> MyCourses = new ArrayList<>();
-
     @Override
     public void onCreate() {
         super.onCreate();

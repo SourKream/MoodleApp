@@ -98,15 +98,18 @@ public class ThreadActivity extends AppCompatActivity {
 
     private void updateComments(){
         CustomCommentListAdapter adapter = (CustomCommentListAdapter) commentsListView.getAdapter();
-        if (!firstTime) commentsListView.setSelection(commentsListView.getAdapter().getCount()-1);
-        if(firstTime) firstTime = false;
         adapter.notifyDataSetChanged();
+        if (!firstTime)
+            commentsListView.setSelection(commentsListView.getAdapter().getCount() - 1);
+        else
+            firstTime = false;
     }
 
     private class UpdateCommentsTask extends TimerTask{
         @Override
         public void run(){
             Log.d("REFRESH", "Fetching new comments now... ");
+            firstTime = true;
             reloadCommentsFromServer();
         }
     }
@@ -122,7 +125,7 @@ public class ThreadActivity extends AppCompatActivity {
                     String jsonCommentUsers = response.getString("comment_users");
                     courseThread.updateComments(jsonComments, jsonCommentUsers);
 
-                    ((CustomCommentListAdapter) commentsListView.getAdapter()).notifyDataSetChanged();
+                    updateComments();
                 } catch (JSONException e) {
                     Log.d("JSON Exception : ", e.getMessage());
                 }
